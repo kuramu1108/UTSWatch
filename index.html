@@ -63,8 +63,10 @@
 			int y;
 			float outsideRadius = 150;
 			float insideRadius = 100;
-			int form;
+			int form = 6000;
 			int strap = 20;
+			char edgeType = 'c';
+			
 			
 			void setup() {
 				size(640, 360);
@@ -79,57 +81,122 @@
 				float angle = 0;
 				float angleStep = 180.0/numPoints;
 				
-				form = int(map(mouseX, 0, width, 6000, 10000));
+				//form = int(map(mouseX, 0, width, 6000, 10000));
 				//strap = int(map(mouseX, 0, width, 20, 30));
 				
-				beginShape(TRIANGLE_STRIP);
-				for (int i = strap; i < 100; i+= 10)
+				
+				
+				if(edgeType == 'c')
 				{
-					float lx = x + i;
-					float ly = y + form/i;
-					if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-					else{
-						vertex(lx, ly);
-						vertex(x + strap, ly);
-					}
-				}
-				endShape();
-				beginShape(TRIANGLE_STRIP);
-				for (int i = strap; i < 100; i+= 10)
-				{
-					float lx = x - i;
-					float ly = y + form/-i;
-					if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-					else{
-						vertex(lx, ly);
-						vertex(x - strap, ly);
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
 						}
-				}
-				endShape();
-				beginShape(TRIANGLE_STRIP);
-				for (int i = strap; i < 100; i+= 10)
-				{
-					float lx = x + i;
-					float ly = y - form/i;
-					if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-					else{
-					vertex(lx, ly);
-					vertex(x + strap, ly);
 					}
-				}
-				endShape();
-				beginShape(TRIANGLE_STRIP);
-				for (int i = strap; i < 100; i+= 10)
-				{
-					float lx = x - i;
-					float ly = y + form/i;
-					if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-					else{
-					vertex(lx, ly);
-					vertex(x - strap, ly);
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+							}
 					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
 				}
-				endShape();
+				else
+				{	
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 133.7; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y + 300/1.4 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+							
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 133.7; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y - (300/1.4 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 133.7; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y - (300/1.4 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}	
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 133.7; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y + 300/1.4 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}	
+					}
+					endShape();
+				}
 				
 				beginShape(TRIANGLE_STRIP);
 				for (int i = 0; i <= numPoints; i++) {
@@ -142,7 +209,6 @@
 					vertex(px, py);
 					angle += angleStep;
 				}
-				
 				endShape();
 				
 			}
@@ -150,6 +216,32 @@
 			void setStrap(val)
 			{
 			 strap = int(val);
+			}
+			
+			void setForm(val)
+			{
+				r = int(val);
+			 if(edgeType == 'c')
+			 {
+			 	form = r;
+			 }
+			 else
+			 {
+			 	form = int(map(r, 6000, 10000, 2, 8));
+			 }
+			}
+			
+			void setEdgeType(val)
+			{
+			 edgeType = val;
+			 if(edgeType == 'c')
+			 {
+				form = 6000;
+	   		 }
+		 	 else
+		 	 {
+				form = 2;
+			 }
 			}
 			</script>
 </head>
@@ -208,7 +300,10 @@
 		</div>
 		
 		<button type="button" onclick="Processing.getInstanceById('mycanvas').setStrap(30)">strap</button>		
-		<input type="range" min="20" max="30" value="25" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/>
+		<input type="range" min="20" max="40" value="30" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/>
+		
+		<button type="button" onclick="Processing.getInstanceById('mycanvas').setEdgeType('s')">edge</button>		
+		<input type="range" min="6000" max="10000" value="8000" step="500" onchange="Processing.getInstanceById('mycanvas').setForm(this.value)"/>
 		
 		<!-- container -->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
