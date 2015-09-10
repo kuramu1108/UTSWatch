@@ -231,16 +231,17 @@
 			 }
 			}
 			
-			void setEdgeType(val)
+			void setEdgeType()
 			{
-			 edgeType = val;
-			 if(edgeType == 'c')
+			 if(edgeType == 's')
 			 {
 				form = 6000;
+				edgeType = 'c';
 	   		 }
 		 	 else
 		 	 {
 				form = 2;
+				edgeType = 's';
 			 }
 			}
 			</script>
@@ -302,7 +303,7 @@
 		<button type="button" onclick="Processing.getInstanceById('mycanvas').setStrap(30)">strap</button>		
 		<input type="range" min="20" max="40" value="30" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/>
 		
-		<button type="button" onclick="Processing.getInstanceById('mycanvas').setEdgeType('s')">edge</button>		
+		<button type="button" onclick="Processing.getInstanceById('mycanvas').setEdgeType()">edge</button>		
 		<input type="range" min="6000" max="10000" value="8000" step="500" onchange="Processing.getInstanceById('mycanvas').setForm(this.value)"/>
 		
 		<!-- container -->
