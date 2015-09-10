@@ -144,11 +144,11 @@
 				else
 				{	
 					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 133.7; i+= 10)
+					for (int i = strap; i < 150; i+= 3)
 					{
 						float lx = x + i;
-						float ly = y + 300/1.4 - form *(i-65);
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
 						else
 						{
 							vertex(lx, ly);
@@ -158,11 +158,11 @@
 					}
 					endShape();
 					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 133.7; i+= 10)
+					for (int i = strap; i < 150; i+= 3)
 					{
 						float lx = x - i;
-						float ly = y - (300/1.4 - form *(i-65));
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
 						else
 						{
 							vertex(lx, ly);
@@ -171,11 +171,11 @@
 					}
 					endShape();
 					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 133.7; i+= 10)
+					for (int i = strap; i < 150; i+= 3)
 					{
 						float lx = x + i;
-						float ly = y - (300/1.4 - form *(i-65));
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
 						else
 						{
 							vertex(lx, ly);
@@ -184,11 +184,11 @@
 					}
 					endShape();
 					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 133.7; i+= 10)
+					for (int i = strap; i < 150; i+= 3)
 					{
 						float lx = x - i;
-						float ly = y + 300/1.4 - form *(i-65);
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius){}
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
 						else
 						{
 							vertex(lx, ly);
