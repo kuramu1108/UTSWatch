@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<title>UTS Watch</title>
+		
+		
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link href='http://fonts.googleapis.com/css?family=Playfair+Display:900,400|Lato:300,400,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/dragdealer.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<link rel="stylesheet" type="text/css" href="css/style4.css" />
+  		<script src="js/modernizr.custom.js"></script>
+  		 	  
+  		 	    <!-- For the Edit Option button -->
+	    <link href="css/documentation.css" rel="stylesheet" />
+		<link href="css/jquery.toolbars.css" rel="stylesheet" />
+		<link href='http://fonts.googleapis.com/css?family=Lustria' rel='stylesheet' type='text/css'>
+		<link href="/edit_media/2013/201302/20130228/paulkinzett-toolbar/bootstrap.icons.css" rel="stylesheet">
+		<link href="css/prettify.css" rel="stylesheet">
+		<link href="css/sunburst.css" rel="stylesheet">
+  		
+  		<!--  Slider -->
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+		
+		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+ 	    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+ 	    
+ 	    <!-- Swipe Script -->
+
+				<!-- Geometry Script -->
+		 <script type="text/javascript" src="js/Geometry/three_mod.js"></script>
+  		 <script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
+   		 <script type="text/javascript" src="js/Geometry/stats.js"></script>
+   		 <script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
+		<!-- Processing -->
+		<script src="processing.js"></script>
+		
+			<!-- Processing Script  -->
+			<script type="application/processing" data-processing-target="mycanvas">
+			int x;
+			int y;
+			float outsideRadius = 150;
+			float insideRadius = 100;
+			int form = 6000;
+			int strap = 20;
+			char edgeType = 'c';
+			
+			
+			void setup() {
+				size(640, 360);
+				background(204);
+				x = width/2;
+				y = height/2;
+			}
+
+			void draw() {
+				background(204);
+				int numPoints = int(map(mouseX, 0, width, 6, 60));
+				float angle = 0;
+				float angleStep = 180.0/numPoints;
+				
+				//form = int(map(mouseX, 0, width, 6000, 10000));
+				//strap = int(map(mouseX, 0, width, 20, 30));
+				
+				
+				
+				if(edgeType == 'c')
+				{
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+							}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
+				}
+				else
+				{	
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x + i;
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+							
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x - i;
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x + i;
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}	
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x - i;
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}	
+					}
+					endShape();
+				}
+				
+				beginShape(TRIANGLE_STRIP);
+				for (int i = 0; i <= numPoints; i++) {
+					float px = x + cos(radians(angle)) * outsideRadius;
+					float py = y + sin(radians(angle)) * outsideRadius;
+					angle += angleStep;
+					vertex(px, py);
+					px = x + cos(radians(angle)) * insideRadius;
+					py = y + sin(radians(angle)) * insideRadius;
+					vertex(px, py);
+					angle += angleStep;
+				}
+				endShape();
+				
+			}
+			
+			void setStrap(val)
+			{
+			 strap = int(val);
+			}
+			
+			void setForm(val)
+			{
+				r = int(val);
+			 if(edgeType == 'c')
+			 {
+			 	form = r;
+			 }
+			 else
+			 {
+			 	form = int(map(r, 6000, 10000, 2, 8));
+			 }
+			}
+			
+			void setEdgeType()
+			{
+			 if(edgeType == 's')
+			 {
+				form = 6000;
+				edgeType = 'c';
+	   		 }
+		 	 else
+		 	 {
+				form = 2;
+				edgeType = 's';
+			 }
+			}
+			</script>
+			<script>
+			function outputUpdate(vol) {
+				document.querySelector('#volume').value = vol;
+			}
+			</script>
+
+	</head>
+	<body>
+		<div class="container">
+			<header id="header" class="codrops-header">
+				<button class="slider-switch">Switch view</button>
+			</header>
+			
+			<!-- Overlay Help Window 
+			<div id="overlay" class="overlay">
+				<div class="info">
+					<h2>Demo interactions</h2>
+					<span class="info-drag">Drag Sliders</span>
+					<span class="info-keys">Use Arrows</span>
+					<span class="info-switch">Switch view</span>
+					<button>Got it!</button>	
+				</div>
+			</div> -->
+			
+			<!-- Slideshow starts here -->
+			<div id="slideshow" class="dragslider">
+				<section class="img-dragger img-dragger-large dragdealer">
+					<div class="handle">
+						<div class="slide" data-content="content-1">
+						<h1><div>UTS WATCH V6</div></h1>
+
+						<!-- Menu Starts Here -->
+							<div id="dl-menu" class="dl-menuwrapper">
+								<button class="dl-trigger">Open Menu</button>
+								<ul class="dl-menu">
+									<li>
+										<a href="#">Option 1</a>
+										<ul class="dl-submenu">
+											<li>
+												<a href="#">Strap</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount <input type="range" min="20" max="40" value="30" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/></a></li>
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+											<li>
+												<a href="#">Edge</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount<input type="range" min="6000" max="10000" value="8000" step="500" onchange="Processing.getInstanceById('mycanvas').setForm(this.value)"/>	
+													</a></li>
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+											<li>
+												<a href="#">Sub 3</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount</a></li>
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="#">Option 2</a>
+										<ul class="dl-submenu">
+											<li>
+												<a href="#">Sub 1</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount</a></li>
+													
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+											<li>
+												<a href="#">Sub 2</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount</a></li>
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+											<li>
+												<a href="#">Sub 3</a>
+												<ul class="dl-submenu">
+													<li><a href="#">Amount</a></li>
+													<li><a href="#">Cancel</a></li>
+													<li><a href="#">OK</a></li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div><!-- /dl-menuwrapper -->
+
+							<!-- Canvas Here -->
+							<canvas id="mycanvas" class="preview" align="centre"></canvas>		
+							<h2></h2> <!-- Write here text for 2D page -->
+
+							<button class="content-switch">Read more</button>
+						</div>
+						<div class="slide" data-content="content-2">
+							<h2>Next Step</h2>
+							
+							<!-- Geometry Start Here -->
+						<!-- Div which will hold the Output -->
+						<div id="WebGL-output" align="centre">
+						<!-- Javascript code that runs our Three.js examples -->
+						<script type="text/javascript">
+						
+						    // once everything is loaded, we run our Three.js stuff.
+						    $(function () {
+						
+						        //var stats = initStats();
+						
+						        // create a scene, that will hold all our elements such as objects, cameras and lights.
+						        var scene = new THREE.Scene();
+						
+						        // create a camera, which defines where we're looking at.
+						        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+						
+						        // create a render and set the size
+						        var webGLRenderer = new THREE.WebGLRenderer();
+						        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+						        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+						        webGLRenderer.shadowMapEnabled = true;
+						
+						        var shape = createMesh(new THREE.ShapeGeometry(drawShape()));
+						        // add the sphere to the scene
+						        scene.add(shape);
+						
+						        // position and point the camera to the center of the scene
+						        camera.position.x = -80;
+						        camera.position.y = 80;
+						        camera.position.z = 60;
+						        camera.lookAt(new THREE.Vector3(20, 20, 0));
+						
+						        // add the output of the renderer to the html element
+						        $("#WebGL-output").append(webGLRenderer.domElement);
+						
+						        // call the render function
+						        var step = 0;
+						
+						        // setup the control gui
+						        var controls = new function () {
+						
+						            this.amount = 2;
+						            this.bevelThickness = 2;
+						            this.bevelSize = 0.5;
+						            this.bevelEnabled = true;
+						            this.bevelSegments = 3;
+						            this.bevelEnabled = true;
+						            this.curveSegments = 12;
+						            this.steps = 1;
+									this.curveA = 10;
+									this.curveB = 15;
+						
+						            this.asGeom = function () {
+						                // remove the old plane
+						                scene.remove(shape);
+						                // create a new one
+						
+						                var options = {
+						                    amount: controls.amount,
+						                    bevelThickness: controls.bevelThickness,
+						                    bevelSize: controls.bevelSize,
+						                    bevelSegments: controls.bevelSegments,
+						                    bevelEnabled: controls.bevelEnabled,
+						                    curveSegments: controls.curveSegments,
+						                    steps: controls.steps,
+											curveA: controls.curveA,
+											curveB: controls.curveB
+						                };
+						
+						                shape = createMesh(new THREE.ExtrudeGeometry(drawShape(options.curveA, options.curveB), options));
+						                // add it to the scene.
+						                scene.add(shape);
+						            };
+						
+						        }
+						
+						        var gui = new dat.GUI();
+						        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
+						        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
+						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
+								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
+						
+						        controls.asGeom(); //changes the values, removes the old plane, draws a new shape to the screen
+						        render();
+						
+						        function drawShape(curveA, curveB) {
+						
+						            // create a basic shape
+						            var shape = new THREE.Shape();
+									/*
+						            // startpoint
+						            shape.moveTo(10, 10);
+						
+						            // straight line upwards
+						            shape.lineTo(10, 40);
+						
+						            // the top of the figure, curve to the right
+						            shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+						
+						            // spline back down
+						            shape.splineThru(
+						                    [new THREE.Vector2(32, 30),
+						                        new THREE.Vector2(28, 20),
+						                        new THREE.Vector2(30, 10),
+						                    ])
+						
+						            // curve at the bottom
+						            shape.quadraticCurveTo(20, 15, 10, 10);
+						
+						            // add 'eye' hole one
+						            var hole1 = new THREE.Path();
+						            hole1.absellipse(16, 24, 2, 3, 0, Math.PI * 2, true);
+						            shape.holes.push(hole1);
+						
+						            // add 'eye hole 2'
+						            var hole2 = new THREE.Path();
+						            hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
+						            shape.holes.push(hole2);
+						
+						            // add 'mouth'
+						            var hole3 = new THREE.Path();
+						            hole3.absarc(20, 16, 2, 0, Math.PI, true);
+						            shape.holes.push(hole3);
+									*/
+									
+									shape.moveTo(10, 10);
+									/*shape.CubicBezierCurve3(
+										new THREE.Vector3(10,10,0), 
+										new THREE.Vector3(curveA,curveB,0),
+										new THREE.Vector3(curveA,curveB,0),
+										new THREE.Vector3(10,40,0)
+										);*/
+									//shape.quadraticCurveTo(curveA, curveB, 5, 25);
+									//shape.quadraticCurveTo(curveA, curveB, 10, 40);
+									shape.lineTo(5, 25);
+						            //shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+									shape.lineTo(10, 40);
+						            //shape.quadraticCurveTo(70, 10, 40, 10);
+									shape.lineTo(40, 40);
+									shape.lineTo(45, 25);
+									shape.lineTo(40, 10);
+									shape.lineTo(10, 10);
+									
+						            // return the shape
+						            return shape;
+						        }
+						
+						        function createMesh(geom) {
+						
+						            geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
+						
+						            // assign two materials
+						            var meshMaterial = new THREE.MeshNormalMaterial({transparent: true, opacity: 0.7});
+						
+						            //  meshMaterial.side = THREE.DoubleSide;
+						            var wireFrameMat = new THREE.MeshBasicMaterial();
+						            wireFrameMat.wireframe = true;
+						
+						            // create a multimaterial
+						            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+						
+						            return mesh;
+						        }
+						
+						        function createLine(shape, spaced) {
+						            if (!spaced) {
+						                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+						                return mesh;
+						            } else {
+						                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+						                return mesh;
+						            }
+						
+						        }
+						
+						        function render() {
+						            //stats.update();
+						
+						            shape.rotation.y = step += 0.01;
+						
+						            // render using requestAnimationFrame
+						            requestAnimationFrame(render);
+						            webGLRenderer.render(scene, camera);
+						        }
+						/*
+						        function initStats() {
+						
+						            var stats = new Stats();
+						            stats.setMode(0); // 0: fps, 1: ms
+						
+						            // Align top-left
+						            stats.domElement.style.position = 'absolute';
+						            stats.domElement.style.left = '0px';
+						            stats.domElement.style.top = '0px';
+						
+						            $("#Stats-output").append(stats.domElement);
+						
+						            return stats;
+						        }*/
+						    });
+						
+						
+						</script></div> <!-- The Geometry End Here -->
+							<button class="content-switch">Read more</button>
+						</div>
+						
+				</section>
+				
+				<!-- Content section -->
+				<section class="pages">
+					<div class="content" data-content="content-1">
+						<h2>Surprise~!</h2>
+					</div>
+				</section>
+			</div>
+		</div><!-- /container --> 
+		<script src="js/dragdealer.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/dragslideshow.js"></script>
+		<script>
+			(function() {
+
+				var overlay = document.getElementById( 'overlay' ),
+					overlayClose = overlay.querySelector( 'button' ),
+					header = document.getElementById( 'header' )
+					switchBtnn = header.querySelector( 'button.slider-switch' ),
+					toggleBtnn = function() {
+						if( slideshow.isFullscreen ) {
+							classie.add( switchBtnn, 'view-maxi' );
+						}
+						else {
+							classie.remove( switchBtnn, 'view-maxi' );
+						}
+					},
+					toggleCtrls = function() {
+						if( !slideshow.isContent ) {
+							classie.add( header, 'hide' );
+						}
+					},
+					toggleCompleteCtrls = function() {
+						if( !slideshow.isContent ) {
+							classie.remove( header, 'hide' );
+						}
+					},
+					slideshow = new DragSlideshow( document.getElementById( 'slideshow' ), { 
+						// toggle between fullscreen and minimized slideshow
+						onToggle : toggleBtnn,
+						// toggle the main image and the content view
+						onToggleContent : toggleCtrls,
+						// toggle the main image and the content view (triggered after the animation ends)
+						onToggleContentComplete : toggleCompleteCtrls
+					}),
+					toggleSlideshow = function() {
+						slideshow.toggle();
+						toggleBtnn();
+					},
+					closeOverlay = function() {
+						classie.add( overlay, 'hide' );
+					};
+
+				// toggle between fullscreen and small slideshow
+				switchBtnn.addEventListener( 'click', toggleSlideshow );
+				// close overlay
+				overlayClose.addEventListener( 'click', closeOverlay );
+
+			}());
+		</script>
+		
+		<!-- container -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script src="js/jquery.ui.touch-punch.min.js"></script>
+		<script src="js/jquery.pagination.js"></script>
+		<script>
+			$(function() {
+
+				var $update = $( '#preview > span' );
+
+				$( "#slider" ).pagination( {
+					total : 100,
+					onChange : function( value ) {
+						$update.text( value );
+					}
+				} );
+
+			});
+		</script>
+		
+		<!-- Multi Level Menu Script -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/jquery.dlmenu.js"></script>
+		<script>
+			$(function() {
+				$( '#dl-menu' ).dlmenu();
+			});
+		</script>
+	</body>
+	<script src="js/classie.js"></script>
+	<script src="js/borderMenu.js"></script>
+</html>

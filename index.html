@@ -1,329 +1,788 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
-<script src="processing.js"></script>
+<html lang="en" class="no-js">
+	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-		<title>UTS Watch MiniFab</title>
 		
-		<!--  Slide Button -->
-		<link rel="shortcut icon" href="../favicon.ico"> 
-		<link rel="stylesheet" type="text/css" href="css/demo.css" />
-		<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
-		<link rel="stylesheet" type="text/css" href="css/style.css" />
-
-		<!-- Navigation CSS -->		
-		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<title>UTS WATCH MINIFAB</title>
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<link rel="stylesheet" type="text/css" href="css/animations.css" />
+		<script src="js/modernizr-2.6.2.min.js"></script>
 		
-		<!-- For the Edit Option button -->
-	    <link href="css/documentation.css" rel="stylesheet" />
-		<link href="css/jquery.toolbars.css" rel="stylesheet" />
-		<link href='http://fonts.googleapis.com/css?family=Lustria' rel='stylesheet' type='text/css'>
-		<link href="/edit_media/2013/201302/20130228/paulkinzett-toolbar/bootstrap.icons.css" rel="stylesheet">
-		<link href="css/prettify.css" rel="stylesheet">
-		<link href="css/sunburst.css" rel="stylesheet">
-		
-		<!-- Processing -->
-		<script src="processing.js"></script>
-		
-		<!-- Slide Button Script -->
-		<script src="js/modernizr.custom.63321.js"></script>
-		
-		<!-- Navigation Menu Script -->
-		<script type="text/javascript">
-			jQuery(document).ready(function($) {
-
-				// Define any icon actions before calling the toolbar
-				$('.toolbar-icons a').on('click', function( event ) {
-					event.preventDefault();
-				});
-
-				$('#normal-button').toolbar({content: '#user-options', position: 'top'});
-				$('#normal-button-bottom').toolbar({content: '#user-options', position: 'bottom'});
-				$('#normal-button-small').toolbar({content: '#user-options-small', position: 'top', hideOnClick: true});
-				$('#button-left').toolbar({content: '#user-options', position: 'left'});
-				$('#button-right').toolbar({content: '#user-options', position: 'right'});
-				$('#link-toolbar').toolbar({content: '#user-options', position: 'top'});
-
-			});
-		</script>
-		<script>
-		function outputUpdate(vol) {
-			document.querySelector('#volume').value = vol;
-		}
-		</script>
-		
-		<!-- Processing Script  -->
-			<script type="application/processing" data-processing-target="mycanvas">
-			int x;
-			int y;
-			float outsideRadius = 150;
-			float insideRadius = 100;
-			int form = 6000;
-			int strap = 20;
-			char edgeType = 'c';
-			
-			
-			void setup() {
-				size(640, 360);
-				background(204);
-				x = width/2;
-				y = height/2;
-			}
-
-			void draw() {
-				background(204);
-				int numPoints = int(map(mouseX, 0, width, 6, 60));
-				float angle = 0;
-				float angleStep = 180.0/numPoints;
-				
-				//form = int(map(mouseX, 0, width, 6000, 10000));
-				//strap = int(map(mouseX, 0, width, 20, 30));
-				
-				
-				
-				if(edgeType == 'c')
-				{
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 100; i+= 10)
-					{
-						float lx = x + i;
-						float ly = y + form/i;
-						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x + strap, ly);
-						}
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 100; i+= 10)
-					{
-						float lx = x - i;
-						float ly = y - form/i;
-						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x - strap, ly);
-							}
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 100; i+= 10)
-					{
-						float lx = x + i;
-						float ly = y - form/i;
-						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x + strap, ly);
-						}
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 100; i+= 10)
-					{
-						float lx = x - i;
-						float ly = y + form/i;
-						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x - strap, ly);
-						}
-					}
-					endShape();
-				}
-				else
-				{	
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 150; i+= 3)
-					{
-						float lx = x + i;
-						float ly = y + 300/1.42 - form *(i-65);
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x + strap, ly);
-						}
-							
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 150; i+= 3)
-					{
-						float lx = x - i;
-						float ly = y - (300/1.42 - form *(i-65));
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x - strap, ly);
-						}
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 150; i+= 3)
-					{
-						float lx = x + i;
-						float ly = y - (300/1.42 - form *(i-65));
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x + strap, ly);
-						}	
-					}
-					endShape();
-					beginShape(TRIANGLE_STRIP);
-					for (int i = strap; i < 150; i+= 3)
-					{
-						float lx = x - i;
-						float ly = y + 300/1.42 - form *(i-65);
-						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
-						else
-						{
-							vertex(lx, ly);
-							vertex(x - strap, ly);
-						}	
-					}
-					endShape();
-				}
-				
-				beginShape(TRIANGLE_STRIP);
-				for (int i = 0; i <= numPoints; i++) {
-					float px = x + cos(radians(angle)) * outsideRadius;
-					float py = y + sin(radians(angle)) * outsideRadius;
-					angle += angleStep;
-					vertex(px, py);
-					px = x + cos(radians(angle)) * insideRadius;
-					py = y + sin(radians(angle)) * insideRadius;
-					vertex(px, py);
-					angle += angleStep;
-				}
-				endShape();
-				
-			}
-			
-			void setStrap(val)
-			{
-			 strap = int(val);
-			}
-			
-			void setForm(val)
-			{
-				r = int(val);
-			 if(edgeType == 'c')
-			 {
-			 	form = r;
-			 }
-			 else
-			 {
-			 	form = int(map(r, 6000, 10000, 2, 8));
-			 }
-			}
-			
-			void setEdgeType()
-			{
-			 if(edgeType == 's')
-			 {
-				form = 6000;
-				edgeType = 'c';
-	   		 }
-		 	 else
-		 	 {
-				form = 2;
-				edgeType = 's';
-			 }
-			}
-			</script>
-</head>
-<body>
-	<canvas id="mycanvas" class="preview" align="centre"></canvas>
+		 <!-- Geometry Script -->
+		 <script type="text/javascript" src="js/Geometry/three_mod.js"></script>
+  		 <script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
+   		 <script type="text/javascript" src="js/Geometry/stats.js"></script>
+   		 <script type="text/javascript" src="js/Geometry/dat.gui.js"></script>	
+	</head>
+	<body>
 	
-			<!-- Left Navigation Menu -->
-		<div class="container">
-			<ul id="gn-menu" class="gn-menu-main">
-				<li class="gn-trigger">
-					<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-					<nav class="gn-menu-wrapper">
-						<div class="gn-scroller">
-							<ul class="gn-menu">
-								<li class="gn-search-item">
-									<input placeholder="Search" type="search" class="gn-search">
-									<a class="gn-icon gn-icon-search"><span>Search</span></a>
-								</li>
-								<li>
-									<a class="gn-icon gn-icon-download">Resize</a>
-									<ul class="gn-submenu">
-										<li><a class="gn-icon gn-icon-illustrator">Account</a></li>
-										<li><a class="gn-icon gn-icon-article">Sample Design</a></li>
-									</ul>
-								</li>
-								<li><a class="gn-icon gn-icon-cog">Settings</a></li>
-								<li><a class="gn-icon gn-icon-help">Help</a></li>
-							</ul>
-						</div><!-- /gn-scroller -->
-					</nav>
-				</li>
-				<li><a href="">UTS Watch MiniFab</a></li>
-				<!--  <li><a class="codrops-icon codrops-icon-prev" href="index.html"><span>Back to Main</span></a></li>-->
-				<li><a class="codrops-icon codrops-icon-drop" href=""><span>Log In</span></a></li>
-			</ul>
-		</div><!-- /container -->
-		
-				<!-- Script for Navigation Menu -->
-		<script src="js/classie.js"></script>
-		<script src="js/gnmenu.js"></script>
-		<script>
-			new gnMenu( document.getElementById( 'gn-menu' ) );
-		</script>
-		
-		<!-- Slide Button -->
-		<div class="container">	
-			<div class="main">
-				<div id="slider" class="sp-slider-wrapper">
-					<!-- Arrows -->
-					<nav>
-						<a href="#" class="sp-prev">Previous</a>
-						<a href="#" class="sp-next">Next</a>
-					</nav>
-				</div>
-			</div>
+		<!-- Body Top -->
+		<div class="codrops-top clearfix">
+			<a class="" href=""><span>HEXA_CORN</span></a>
+			<span class="right"><a class="" href=""><span>Log in / Sign in</span></a></span>
 		</div>
 		
-		<button type="button" onclick="Processing.getInstanceById('mycanvas').setStrap(30)">strap</button>		
-		<input type="range" min="20" max="40" value="30" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/>
+			<!-- Navigation -->
+			<div class="component">
+			
+				<!-- Start Nav Structure -->
+				<button class="cn-button" id="cn-button">+</button>
+				<div class="cn-wrapper" id="cn-wrapper">
+				    <ul>
+				      <li><a href="#"><span class=""></span></a></li>
+				      <li><a href="#"><span class=""></span></a></li>
+				      <li><a href="#"><span class=""></span></a></li>
+				      <li><a href="#"><span class=""></span></a></li>
+				      <li><a href="#"><span class=""></span></a></li>
+				     </ul>
+				</div>
+				<div id="cn-overlay" class="cn-overlay"></div>
+				<!-- End Nav Structure -->
+			</div>
+			<script src="js/polyfills.js"></script>
+			<script src="js/demo1.js"></script>
+			<!-- End of Navigation Script -->
 		
-		<button type="button" onclick="Processing.getInstanceById('mycanvas').setEdgeType()">edge</button>		
-		<input type="range" min="6000" max="10000" value="8000" step="500" onchange="Processing.getInstanceById('mycanvas').setForm(this.value)"/>
+		<!-- Next Page Button -->
+		<div class="pt-triggers"><button id="iterateEffects" class="pt-touch-button" >Next Step</button></div><!-- /triggers end-->
+
+		<div id="pt-main" class="pt-perspective">
+			
+			<!-- First Page -->
+			<div class="pt-page pt-page-1">
+			<h3 align="center">2D MODEL</h3>
+			<div id="initialPhase"></div>
+			
+			<!--- 2D Object Start Here -->
+			<!---- Initial screen ----->
+			<script type="text/javascript">
+			
+							
+		    // once everything is loaded, we run our Three.js stuff.
+			    $(function () {
+	
+			        //var stats = initStats();
+			
+			        // create a scene, that will hold all our elements such as objects, cameras and lights.
+			        var scene = new THREE.Scene();
+			
+			        // create a camera, which defines where we're looking at.
+			        var camera = new THREE.PerspectiveCamera(45, window.innerWidth*2 / window.innerHeight, 0.1, 1000);
+					scene.add(camera);
+			        // create a render and set the size
+			        var webGLRenderer = new THREE.WebGLRenderer();
+			        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+			        webGLRenderer.setSize(window.innerWidth, window.innerHeight/2);
+			        webGLRenderer.shadowMapEnabled = true;
+					
+					var initialShape = drawShape();
+			        var shape = createMesh(new THREE.ShapeGeometry(initialShape));
+			        // add the sphere to the scene
+			        scene.add(shape);
+			        
+			        var initialLug = drawLug();
+			        var lug = createMesh(new THREE.ShapeGeometry(initialLug));
+			        // add the sphere to the scene
+			        scene.add(lug);
+			        // position and point the camera to the center of the scene
+			        camera.position.x = 0;
+			        camera.position.y = 0;
+			        camera.position.z = 150;
+			        camera.lookAt(new THREE.Vector3(0, 0, 0));
+			        
+			        scene.add( new THREE.AmbientLight( 0x001133 ) );
+	
+					var light = new THREE.PointLight( 0xffffff, 0.3 );
+					camera.add( light );
+					
+					var spotLight = new THREE.SpotLight( 0xffffff, 0.1 );
+					spotLight.position.set( 100, 100, 50 );
+					
+					spotLight.castShadow = true;
+					
+					spotLight.shadowMapWidth = 102;
+					spotLight.shadowMapHeight = 102;
+					
+					spotLight.shadowCameraNear = 50;
+					spotLight.shadowCameraFar = 400;
+					spotLight.shadowCameraFov = 300;
+					
+					scene.add( spotLight );
+			
+			        // add the output of the renderer to the html element
+			        $("#initialPhase").append(webGLRenderer.domElement);
+	
+			        // call the render function
+			        var step = 0;
+			
+			        // setup the control gui
+			        var controls = new function () {
+			
+			            this.amount = 0;
+			            this.bevelThickness = 0;
+			            this.bevelSize = 0;
+			            this.bevelEnabled = false;
+			            this.bevelSegments = 0;
+			            this.bevelEnabled = false;
+			            this.curveSegments = 0;
+			            this.steps = 0;
+						this.curveA = 0;
+						this.curveB = 0;
+			
+			            this.asGeom = function () {
+			                // remove the old plane
+			                scene.remove(shape);
+			                // create a new one
+			
+			                var options = {
+			                    amount: controls.amount,
+			                    bevelThickness: controls.bevelThickness,
+			                    bevelSize: controls.bevelSize,
+			                    bevelSegments: controls.bevelSegments,
+			                    bevelEnabled: controls.bevelEnabled,
+			                    curveSegments: controls.curveSegments,
+			                    steps: controls.steps,
+								curveA: controls.curveA,
+								curveB: controls.curveB
+			                };
+			
+			                shape = createMesh(new THREE.ExtrudeGeometry(drawShape(), options));
+			                // add it to the scene.
+			                scene.add(shape);
+			            };
+			
+			        }
+			
+			        render();
+			
+			        function drawShape() {
+			
+			            // create a basic shape
+			            var circle = new THREE.Shape();
+						var radius = 35;
+						
+						for (var i = 0; i < 360; i++) {
+							var pct = (i + 1) / 360;
+							var theta = pct * Math.PI * 2.0;
+							var x = radius * Math.cos(theta);
+							var y = radius * Math.sin(theta);
+							if (i == 0) 
+							{
+								circle.moveTo(x, y);
+							} else {
+								circle.lineTo(x, y);
+							}
+						}
+	
+						
+			            // return the shape
+			            return circle;
+			        }
+			        
+			        function drawLug() {
+						var lugs = [];
+			            // create a basic shape of lugs
+			            var trlug = new THREE.Shape();
+						var strapWidth = 15;
+						var form = 2;
+						var trox = strapWidth;
+						var troy = 46 - form * (strapWidth - 14);
+						var limit = 35;
+						for (var i = strapWidth; i <= limit; i++)
+						{
+							var x = i;
+							var y = (46 - form *(i-14));
+							if (i == strapWidth)
+							{
+								trlug.moveTo(x, y);
+							}
+							else
+							{
+								trlug.lineTo(x, y);				
+							}
+								
+						}
+						trlug.lineTo(trox, (46 - form *(limit-14)));
+						trlug.lineTo(trox, troy);
+						
+						var bllug = new THREE.Shape();
+						var blox = -strapWidth;
+						var bloy = -46 + form * (strapWidth - 14);
+						for (var i = strapWidth; i <= limit; i++)
+						{
+							var x = -i;
+							var y = -46 + form *(i - 14);
+							if (i == strapWidth)
+							{
+								bllug.moveTo(x, y);
+							}
+							else
+							{
+								bllug.lineTo(x, y);				
+							}
+								
+						}
+						bllug.lineTo(blox, -46 + form * (limit - 14));
+						bllug.lineTo(blox, bloy);
+						
+						var brlug = new THREE.Shape();
+						var brox = strapWidth;
+						var broy = -46 + form * (strapWidth - 14);
+						for (var i = strapWidth; i <= limit; i++)
+						{
+							var x = i;
+							var y = -46 + form *(i - 14);
+							if (i == strapWidth)
+							{
+								brlug.moveTo(x, y);
+							}
+							else
+							{
+								brlug.lineTo(x, y);				
+							}
+								
+						}
+						brlug.lineTo(brox, -46 + form * (limit - 14));
+						brlug.lineTo(brox, broy);
+	
+						var tllug = new THREE.Shape();
+						var tlox = -strapWidth;
+						var tloy = -46 + form * (strapWidth - 14);
+						for (var i = strapWidth; i <= limit; i++)
+						{
+							var x = -i;
+							var y = 46 - form *(i - 14);
+							if (i == strapWidth)
+							{
+								tllug.moveTo(x, y);
+							}
+							else
+							{
+								tllug.lineTo(x, y);				
+							}
+								
+						}
+						tllug.lineTo(tlox, 46 - form * (limit - 14));
+						tllug.lineTo(tlox, tloy);
+					// return the shape
+						lugs.push(trlug);
+						lugs.push(bllug);
+						lugs.push(brlug);
+						lugs.push(tllug);
+			            return lugs;
+			        }
+	
+			
+			        function createMesh(geom) {
+			
+			            //geom.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, 0));
+			
+			            // assign two materials
+			            var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x000000, specular:0xffffff, combine: THREE.MultiplyOperation} );
+			
+			            //  meshMaterial.side = THREE.DoubleSide;
+			            var wireFrameMat = new THREE.MeshBasicMaterial();
+			            wireFrameMat.wireframe = true;
+			
+			            // create a multimaterial
+			            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+			
+			            return mesh;
+			        }
+			
+			        function createLine(shape, spaced) {
+			            if (!spaced) {
+			                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+			                return mesh;
+			            } else {
+			                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+			                return mesh;
+			            }
+			
+			        }
+			
+			        function render() {
+			            // render using requestAnimationFrame
+			            requestAnimationFrame(render);
+			            webGLRenderer.render(scene, camera);
+			        }
 		
-		<!-- container -->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-		<script src="js/jquery.ui.touch-punch.min.js"></script>
-		<script src="js/jquery.pagination.js"></script>
-		<script>
-			$(function() {
-
-				var $update = $( '#preview > span' );
-
-				$( "#slider" ).pagination( {
-					total : 100,
-					onChange : function( value ) {
-						$update.text( value );
+			        						    });
+			
+			
+			</script>
+			
+			</div><!-- End of First Page -->
+			
+			<!-- Second Page -->
+			<div class="pt-page pt-page-2">
+			<h3 align="center">3D MODEL</h3>
+			
+				<!-------------- 3D Geometry Start Here ------------------->
+				
+				<!-- Div which will hold the Output -->
+				<div id="WebGL-output" align="centre">
+				<!-- Javascript code that runs our Three.js examples -->
+				<script type="text/javascript">
+				
+				    // once everything is loaded, we run our Three.js stuff.
+				    $(function () {
+				
+				        //var stats = initStats();
+				
+				        // create a scene, that will hold all our elements such as objects, cameras and lights.
+				        var scene = new THREE.Scene();
+				
+				        // create a camera, which defines where we're looking at.
+				        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+				
+				        // create a render and set the size
+				        var webGLRenderer = new THREE.WebGLRenderer();
+				        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+				        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+				        webGLRenderer.shadowMapEnabled = true;
+				
+				        var shape = createMesh(new THREE.ShapeGeometry(drawShape()));
+				        // add the sphere to the scene
+				        scene.add(shape);
+				
+				        // position and point the camera to the center of the scene
+				        camera.position.x = 140;
+				        camera.position.y = 90;
+				        camera.position.z = 20;
+				        camera.lookAt(new THREE.Vector3(0, 0, 0));
+				
+				        // add the output of the renderer to the html element
+				        $("#WebGL-output").append(webGLRenderer.domElement);
+				
+				        // call the render function
+				        var step = 0;
+				
+				        // setup the control gui
+				        var controls = new function () {
+				
+				            this.amount = 2;
+				            this.bevelThickness = 2;
+				            this.bevelSize = 0.5;
+				            this.bevelEnabled = true;
+				            this.bevelSegments = 3;
+				            this.bevelEnabled = true;
+				            this.curveSegments = 12;
+				            this.steps = 1;
+							this.curveA = 10;
+							this.curveB = 15;
+				
+				            this.asGeom = function () {
+				                // remove the old plane
+				                scene.remove(shape);
+				                // create a new one
+				
+				                var options = {
+				                    amount: controls.amount,
+				                    bevelThickness: controls.bevelThickness,
+				                    bevelSize: controls.bevelSize,
+				                    bevelSegments: controls.bevelSegments,
+				                    bevelEnabled: controls.bevelEnabled,
+				                    curveSegments: controls.curveSegments,
+				                    steps: controls.steps,
+									curveA: controls.curveA,
+									curveB: controls.curveB
+				                };
+				
+				                shape = createMesh(new THREE.ExtrudeGeometry(drawShape(options.curveA, options.curveB), options));
+				                // add it to the scene.
+				                scene.add(shape);
+				            };
+				
+				        }
+				        
+						// Chris : Here applied CSS to change location of dropdown menu
+				        var gui = new dat.GUI( { autoPlace: false } );
+				        gui.domElement.id = 'gui';
+				        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
+				        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
+				        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
+				        gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
+				        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
+				        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
+				        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+						//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
+						//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
+				
+				        controls.asGeom(); //changes the values, removes the old plane, draws a new shape to the screen
+				        render();
+				
+				        function drawShape(curveA, curveB) {
+				
+				            // create a basic shape
+				            var shape = new THREE.Shape();
+							/*
+				            // startpoint
+				            shape.moveTo(10, 10);
+				
+				            // straight line upwards
+				            shape.lineTo(10, 40);
+				
+				            // the top of the figure, curve to the right
+				            shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+				
+				            // spline back down
+				            shape.splineThru(
+				                    [new THREE.Vector2(32, 30),
+				                        new THREE.Vector2(28, 20),
+				                        new THREE.Vector2(30, 10),
+				                    ])
+				
+				            // curve at the bottom
+				            shape.quadraticCurveTo(20, 15, 10, 10);
+				
+				            // add 'eye' hole one
+				            var hole1 = new THREE.Path();
+				            hole1.absellipse(16, 24, 2, 3, 0, Math.PI * 2, true);
+				            shape.holes.push(hole1);
+				
+				            // add 'eye hole 2'
+				            var hole2 = new THREE.Path();
+				            hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
+				            shape.holes.push(hole2);
+				
+				            // add 'mouth'
+				            var hole3 = new THREE.Path();
+				            hole3.absarc(20, 16, 2, 0, Math.PI, true);
+				            shape.holes.push(hole3);
+							*/
+							
+							shape.moveTo(10, 10);
+							/*shape.CubicBezierCurve3(
+								new THREE.Vector3(10,10,0), 
+								new THREE.Vector3(curveA,curveB,0),
+								new THREE.Vector3(curveA,curveB,0),
+								new THREE.Vector3(10,40,0)
+								);*/
+							//shape.quadraticCurveTo(curveA, curveB, 5, 25);
+							//shape.quadraticCurveTo(curveA, curveB, 10, 40);
+							shape.lineTo(5, 25);
+				            //shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+							shape.lineTo(10, 40);
+				            //shape.quadraticCurveTo(70, 10, 40, 10);
+							shape.lineTo(40, 40);
+							shape.lineTo(45, 25);
+							shape.lineTo(40, 10);
+							shape.lineTo(10, 10);
+							
+				            // return the shape
+				            return shape;
+				        }
+				
+				        function createMesh(geom) {
+				
+				            geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
+				
+				            // assign two materials
+				            var meshMaterial = new THREE.MeshNormalMaterial({transparent: true, opacity: 0.7});
+				
+				            //  meshMaterial.side = THREE.DoubleSide;
+				            var wireFrameMat = new THREE.MeshBasicMaterial();
+				            wireFrameMat.wireframe = true;
+				
+				            // create a multimaterial
+				            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+				
+				            return mesh;
+				        }
+				
+				        function createLine(shape, spaced) {
+				            if (!spaced) {
+				                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+				                return mesh;
+				            } else {
+				                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+				                return mesh;
+				            }
+				
+				        }
+				
+				        function render() {
+				            //stats.update();
+				
+				            shape.rotation.y = step += 0.01;
+				
+				            // render using requestAnimationFrame
+				            requestAnimationFrame(render);
+				            webGLRenderer.render(scene, camera);
+				        }
+				/*
+				        function initStats() {
+				
+				            var stats = new Stats();
+				            stats.setMode(0); // 0: fps, 1: ms
+				
+				            // Align top-left
+				            stats.domElement.style.position = 'absolute';
+				            stats.domElement.style.left = '0px';
+				            stats.domElement.style.top = '0px';
+				
+				            $("#Stats-output").append(stats.domElement);
+				
+				            return stats;
+				        }*/
+				    });
+				
+				
+				</script></div> <!-- The Geometry End Here -->
+			</div> <!-- End of Second Page -->
+			
+			<!-- Third Page -->
+			<div class="pt-page pt-page-3">
+			<h3 align="center">FINAL</h3>
+			<div id="modelRender">
+						<!--- CAD 3D Objects Start Here -->	    
+		        <script src="http://threejs.org/build/three.min.js"></script>
+		        <script src="http://threejs.org/examples/js/loaders/STLLoader.js"></script>       
+		        <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+		        <script>
+		
+		            var container, camera, scenethree, renderer, controls;
+		            var loader_orig, mesh_orig;
+		            var objects = [], plane;
+		
+					var raycaster = new THREE.Raycaster();
+					var mouse = new THREE.Vector2(),
+					offset = new THREE.Vector3(),
+					INTERSECTED, SELECTED;
+		
+		            init();
+		            animate();
+		            function update() {
+						mesh_orig.material.color.setHex(0x777000);
+		
+		            }
+		            
+		            function init() {
+		                container = document.getElementById("modelRender");
+		                //document.body.appendChild( container );
+		
+		                // renderer
+		
+		                renderer = new THREE.WebGLRenderer( { antialias: true } );
+		                renderer.setSize( window.innerWidth, window.innerHeight );
+		                renderer.setClearColor( 0xeeeeee );
+		                container.appendChild( renderer.domElement );
+		                
+		                renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+						renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+						renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+		
+		                // scene
+		
+		                scenethree = new THREE.Scene();
+		
+		                // camera
+		
+		                camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 10000 );
+		                camera.position.set( 0, 0, 1000 );
+		                scenethree.add( camera ); // required, because we are adding a light as a child of the camera
+		                
+		                //controls
+		                controls = new THREE.OrbitControls(camera);
+		                controls.addEventListener('change', render);
+		
+		                // lights
+		
+		                scenethree.add( new THREE.AmbientLight( 0xffffff ) );
+		
+		                var light = new THREE.PointLight( 0xffffff, 0.8 );
+		                camera.add( light );
+		                
+		                // object
+		
+		                var loader = new THREE.STLLoader();
+		                loader_orig = loader;
+		                loader.load( 'Casio.STL', function ( geometry ) {
+		
+		                    var material = new THREE.MeshPhongMaterial( { color: 0x001133, specular:0xffffff, combine: THREE.MultiplyOperation} );
+		
+		                    var mesh = new THREE.Mesh( geometry, material );
+							mesh_orig = mesh;
+		                    scenethree.add( mesh );
+		                    
+		                    objects.push(mesh);
+		
+		                } );
+		                
+		                loader.load( 'rolex_daytona.stl', function ( geometry ) {
+		
+		                    var material = new THREE.MeshPhongMaterial( { color: 0xff5533, specular:0xffffff, shading: THREE.SmoothShading} );
+		
+		                    var mesh = new THREE.Mesh( geometry, material );
+		
+		                    scenethree.add( mesh );
+		                    
+		                    objects.push(mesh);
+		
+		                } );
+		                
+		                //plane
+		                
+		                plane = new THREE.Mesh(
+							new THREE.PlaneBufferGeometry( 2000, 2000, 8, 8 ),
+							new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
+						);
+						plane.visible = false;
+						scenethree.add( plane );
+		
+		                window.addEventListener( 'resize', onWindowResize, false );
+		                
+		                
+		            }
+		
+		            function onWindowResize() {
+		
+		                camera.aspect = window.innerWidth / window.innerHeight;
+		
+		                camera.updateProjectionMatrix();
+		
+		                renderer.setSize( window.innerWidth, window.innerHeight );
+		
+		            }
+		            
+		            function onDocumentMouseMove( event ) {
+		
+						event.preventDefault();
+		
+						mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+						mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		
+						//
+		
+						raycaster.setFromCamera( mouse, camera );
+		
+						if ( SELECTED ) {
+		
+							var intersects = raycaster.intersectObject( plane );
+							SELECTED.position.copy( intersects[ 0 ].point.sub( offset ) );
+							return;
+		
+						}
+		
+						var intersects = raycaster.intersectObjects( objects );
+		
+						if ( intersects.length > 0 ) {
+		
+							if ( INTERSECTED != intersects[ 0 ].object ) {
+		
+								if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+		
+								INTERSECTED = intersects[ 0 ].object;
+								INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+		
+								plane.position.copy( INTERSECTED.position );
+								plane.lookAt( camera.position );
+		
+							}
+		
+							container.style.cursor = 'pointer';
+		
+						} else {
+		
+							if ( INTERSECTED ) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+		
+							INTERSECTED = null;
+		
+							container.style.cursor = 'auto';
+		
+						}
+		
 					}
-				} );
+		
+					function onDocumentMouseDown( event ) {
+		
+						event.preventDefault();
+		
+						var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 ).unproject( camera );
+		
+						var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+		
+						var intersects = raycaster.intersectObjects( objects );
+		
+						if ( intersects.length > 0 ) {
+		
+							controls.enabled = false;
+		
+							SELECTED = intersects[ 0 ].object;
+		
+							var intersects = raycaster.intersectObject( plane );
+							offset.copy( intersects[ 0 ].point ).sub( plane.position );
+		
+							container.style.cursor = 'move';
+		
+						}
+		
+					}
+		
+					function onDocumentMouseUp( event ) {
+		
+						event.preventDefault();
+		
+						controls.enabled = true;
+		
+						if ( INTERSECTED ) {
+		
+							plane.position.copy( INTERSECTED.position );
+		
+							SELECTED = null;
+		
+						}
+		
+						container.style.cursor = 'auto';
+		
+					}
+		
+		            function animate() {
+		
+		                requestAnimationFrame( animate );
+		
+		                render();
+		            }
+		
+		            function render() {
+		
+		
+		                /*
+var timer = Date.now() * 0.0005;
+		
+		                camera.position.x = Math.cos( timer ) * 500;
+		                camera.position.z = Math.sin( timer ) * 500;
+*/
+		
+/* 		                camera.lookAt( scene1.position ); */
+		                renderer.render( scenethree, camera );
+		
+		            }
+		
+		        </script>
+			</div> <!-- End of CAD Objects -->
+        
+			</div> <!-- End of Third Page -->
+			
+			
+		</div>
 
-			});
-		</script>
-</body>
+		<!-- Show message when the browser does not support -->
+		<div class="pt-message">
+			<p>Your browser does not support CSS animations.</p>
+		</div>
+		
+		
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/jquery.dlmenu.js"></script>
+		<script src="js/pagetransitions.js"></script>
+		
+
+	</body>
 </html>

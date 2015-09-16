@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    
+    <!-- 화면 인코딩 설정 -->
+        <meta charset="EUC-KR"/>
+        
+        <!-- 화면비율(뷰포트) 설정 -->
+        <meta name="viewport"
+        content="width=device-width,
+            initial-scale=1.0,
+            maximum-scale=1.0, minimum-scale=1.0,
+            user-scalable=no"/>
+            
+    <!-- 바로가기 아이콘 설정 안드로이드, IOS -->
+    <link rel="shortcut icon" href=""/>
+    <link rel="apple-touch-icon" href=""/>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    
+    <script>
+    <!-- 이벤트 처리 -->
+        $(function(){
+            $("#orangeDiv").bind("swipeleft", function(){
+                $.mobile.changePage("#bluePage");
+            });
+            $("#orangeDiv").bind("swiperight", function(){
+                $.mobile.changePage("#greenPage");
+            });
+            
+            $("#blueDiv").bind("swipeleft", function(){
+                $.mobile.changePage("#greenPage");
+            });
+            $("#blueDiv").bind("swiperight", function(){
+                $.mobile.changePage("#orangePage");
+            });
+ 
+            $("#greenDiv").bind("swipeleft", function(){
+                $.mobile.changePage("#orangePage");
+            });
+            $("#greenDiv").bind("swiperight", function(){
+                $.mobile.changePage("#bluePage");
+            });
+        });
+        
+        
+    </script>
+    
+<title>Insert title here</title>
+</head>
+<body>
+    <div id="orangePage" data-role="page">
+        <div data-role="header">
+            <h1>오렌지 페이지</h1>
+        </div>
+        <div id="orangeDiv" data-role="content"
+            style="background-color:orange; height:500px">
+        </div>
+    </div>
+    
+    <div id="bluePage" data-role="page">
+        <div data-role="header">
+            <h1>블루 페이지</h1>
+        </div>
+        <div id="blueDiv" data-role="content"
+            style="background-color:blue; height:500px">
+        </div>
+    </div>
+    
+    <div id="greenPage" data-role="page">
+        <div data-role="header">
+            <h1>그린 페이지</h1>
+        </div>
+        <div id="greenDiv" data-role="content"
+            style="background-color:green; height:500px">
+        </div>
+    </div>
+</body>
+</html>

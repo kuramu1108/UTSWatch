@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script src="processing.js"></script>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>UTS Watch MiniFab</title>
+		
+		<!--  Slide Button -->
+		<link rel="shortcut icon" href="../favicon.ico"> 
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<!-- Navigation CSS -->		
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		
+		<!-- For the Edit Option button -->
+	    <link href="css/documentation.css" rel="stylesheet" />
+		<link href="css/jquery.toolbars.css" rel="stylesheet" />
+		<link href='http://fonts.googleapis.com/css?family=Lustria' rel='stylesheet' type='text/css'>
+		<link href="/edit_media/2013/201302/20130228/paulkinzett-toolbar/bootstrap.icons.css" rel="stylesheet">
+		<link href="css/prettify.css" rel="stylesheet">
+		<link href="css/sunburst.css" rel="stylesheet">
+		
+		<!-- Processing -->
+		<script src="processing.js"></script>
+
+		<!-- Processing Script  -->
+			<script type="application/processing" data-processing-target="mycanvas">
+			int x;
+			int y;
+			float outsideRadius = 150;
+			float insideRadius = 100;
+			int form = 6000;
+			int strap = 20;
+			char edgeType = 'c';
+			
+			
+			void setup() {
+				size(640, 360);
+				background(204);
+				x = width/2;
+				y = height/2;
+			}
+
+			void draw() {
+				background(204);
+				int numPoints = int(map(mouseX, 0, width, 6, 60));
+				float angle = 0;
+				float angleStep = 180.0/numPoints;
+				
+				//form = int(map(mouseX, 0, width, 6000, 10000));
+				//strap = int(map(mouseX, 0, width, 20, 30));
+				
+				
+				
+				if(edgeType == 'c')
+				{
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+							}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x + i;
+						float ly = y - form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 100; i+= 10)
+					{
+						float lx = x - i;
+						float ly = y + form/i;
+						if((strap*strap + form*form/(i*i)) < insideRadius*insideRadius){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
+				}
+				else
+				{	
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x + i;
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}
+							
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x - i;
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x + i;
+						float ly = y - (300/1.42 - form *(i-65));
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) > 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x + strap, ly);
+						}	
+					}
+					endShape();
+					beginShape(TRIANGLE_STRIP);
+					for (int i = strap; i < 150; i+= 3)
+					{
+						float lx = x - i;
+						float ly = y + 300/1.42 - form *(i-65);
+						if((strap*strap + (ly - y)*(ly - y)) < insideRadius*insideRadius || (ly - y) < 0){}
+						else
+						{
+							vertex(lx, ly);
+							vertex(x - strap, ly);
+						}	
+					}
+					endShape();
+				}
+				
+				beginShape(TRIANGLE_STRIP);
+				for (int i = 0; i <= numPoints; i++) {
+					float px = x + cos(radians(angle)) * outsideRadius;
+					float py = y + sin(radians(angle)) * outsideRadius;
+					angle += angleStep;
+					vertex(px, py);
+					px = x + cos(radians(angle)) * insideRadius;
+					py = y + sin(radians(angle)) * insideRadius;
+					vertex(px, py);
+					angle += angleStep;
+				}
+				endShape();
+				
+			}
+			
+			void setStrap(val)
+			{
+			 strap = int(val);
+			}
+			
+			void setForm(val)
+			{
+				r = int(val);
+			 if(edgeType == 'c')
+			 {
+			 	form = r;
+			 }
+			 else
+			 {
+			 	form = int(map(r, 6000, 10000, 2, 8));
+			 }
+			}
+			
+			void setEdgeType()
+			{
+			 if(edgeType == 's')
+			 {
+				form = 6000;
+				edgeType = 'c';
+	   		 }
+		 	 else
+		 	 {
+				form = 2;
+				edgeType = 's';
+			 }
+			}
+			</script>
+</head>
+<body>
+	
+		<input type="range" min="20" max="40" value="30" step="1" onchange="Processing.getInstanceById('mycanvas').setStrap(this.value)"/>
+		
+		<input type="range" min="6000" max="10000" value="8000" step="500" onchange="Processing.getInstanceById('mycanvas').setForm(this.value)"/>
+		
+		<!-- container -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+		<script src="js/jquery.ui.touch-punch.min.js"></script>
+		<script src="js/jquery.pagination.js"></script>
+		<script>
+			$(function() {
+
+				var $update = $( '#preview > span' );
+
+				$( "#slider" ).pagination( {
+					total : 100,
+					onChange : function( value ) {
+						$update.text( value );
+					}
+				} );
+
+			});
+		</script>
+</body>
+</html>
