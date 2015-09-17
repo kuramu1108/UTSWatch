@@ -19,12 +19,9 @@
    		 <script type="text/javascript" src="js/Geometry/dat.gui.js"></script>	
    		 
    		 <!--- script for touch --->
-   		 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>	
    		 <script type="text/javascript" src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
    		 <script type="text/javascript" src="http://labs.rampinteractive.co.uk/touchSwipe/jquery.touchSwipe.min.js"></script>
    		 <script type="text/javascript" src="http://labs.rampinteractive.co.uk/touchSwipe/demos/js/main.js"></script>
-   		 <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-   		 <link href="http://labs.rampinteractive.co.uk/touchSwipe/demos/css/main.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
 	
@@ -74,17 +71,19 @@
 					$("#initialPhase").swipe( {
 						swipeStatus:function(event, phase, direction, distance, duration, fingers)
 						{
-							if(direction=="up"){
-								updateStrapWidth(20);
-							}
-							if(direction=="down"){
-								updateStrapWidth(10);
-							}
-							if(direction=="left"){
-								updateStrapWidth(30);
-							}
-							if(direction=="right"){
-								updateStrapWidth(5);
+							if (phase!="cancel" && phase!="end") {
+								if(direction=="up"){
+									console.log("hello up");
+								}
+								if(direction=="down"){
+									console.log("hello down");
+								}
+								if(direction=="left"){
+									console.log("hello left");
+								}
+								if(direction=="right"){
+									console.log("hello right");
+								}
 							}
 							
 							      
@@ -103,7 +102,10 @@ if (phase=="cancel")
 			<!---- Initial screen ----->
 			<script type="text/javascript">
 			
-							
+			    var strapWidth = 15;
+			    function updateStrapWidth(astrapWidth){
+			        strapWidth = astrapWidth;
+		        }
 		    // once everything is loaded, we run our Three.js stuff.
 			    $(function () {
 	
@@ -125,9 +127,7 @@ if (phase=="cancel")
 			        var shape = createMesh(new THREE.ShapeGeometry(initialShape));
 			        // add the sphere to the scene
 			        scene.add(shape);
-			        
-			        var strapWidth = 15;
-			        
+			        			        
 			        var initialLug = drawLug();
 			        var lug = createMesh(new THREE.ShapeGeometry(initialLug));
 			        // add the sphere to the scene
@@ -227,9 +227,7 @@ if (phase=="cancel")
 			            return circle;
 			        }
 			        
-			        function updateStrapWidth(_strapWidth){
-				        strapWidth = _strapWidth;
-			        }
+			       
 			        
 			        function drawLug() {
 						var lugs = [];
