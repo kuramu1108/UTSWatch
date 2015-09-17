@@ -22,6 +22,7 @@
    		 <script type="text/javascript" src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
    		 <script type="text/javascript" src="http://labs.rampinteractive.co.uk/touchSwipe/jquery.touchSwipe.min.js"></script>
    		 <script type="text/javascript" src="http://labs.rampinteractive.co.uk/touchSwipe/demos/js/main.js"></script>
+
 	</head>
 	<body>
 	
@@ -61,44 +62,10 @@
 			<div class="pt-page pt-page-1">
 			<h3 align="center">2D MODEL</h3>
 			<div id="initialPhase"></div>
-			
 			<!--- 2D Object Start Here -->
 			
 
-			<script>
-				$(function() {
-				//Enable swiping...
-					$("#initialPhase").swipe( {
-						swipeStatus:function(event, phase, direction, distance, duration, fingers)
-						{
-							if (phase!="cancel" && phase!="end") {
-								if(direction=="up"){
-									console.log("hello up");
-								}
-								if(direction=="down"){
-									console.log("hello down");
-								}
-								if(direction=="left"){
-									console.log("hello left");
-								}
-								if(direction=="right"){
-									console.log("hello right");
-								}
-							}
-							
-							      
-							/*
-if (phase=="cancel")
-							if (phase=="end")
-*/
-						},
-						threshold:200,
-						maxTimeThreshold:5000,
-						fingers:'all'
-					});
-				});
-			</script>
-
+			
 			<!---- Initial screen ----->
 			<script type="text/javascript">
 			
@@ -824,10 +791,43 @@ var timer = Date.now() * 0.0005;
 		</div>
 		
 		
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="js/jquery.dlmenu.js"></script>
 		<script src="js/pagetransitions.js"></script>
+		<script>
+				$(document).ready(function() {
+				//Enable swiping...
+					$("#initialPhase").swipe( {
+						swipeStatus:function(event, phase, direction, distance, duration, fingers)
+						{
+							if (phase!="cancel" && phase!="end") {
+								if(direction=="up"){
+									updateStrapWidth(30);
+								}
+								if(direction=="down"){
+									updateStrapWidth(10);
+								}
+								if(direction=="left"){
+									updateStrapWidth(15);
+								}
+								if(direction=="right"){
+									updateStrapWidth(5);
+								}
+							}
+							
+							      
+							/*
+if (phase=="cancel")
+							if (phase=="end")
+*/
+						},
+						threshold:200,
+						maxTimeThreshold:5000,
+						fingers:'all'
+					});
+				});
+			</script>
+
 		
 
 	</body>
