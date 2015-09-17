@@ -802,16 +802,20 @@ var timer = Date.now() * 0.0005;
 						{
 							if (phase!="cancel" && phase!="end") {
 								if(direction=="up"){
-									updateStrapWidth(30);
+									updateStrapWidth(30)
+									render();
 								}
 								if(direction=="down"){
-									updateStrapWidth(10);
+									updateStrapWidth(10)
+									render();
 								}
 								if(direction=="left"){
-									updateStrapWidth(15);
+									updateStrapWidth(15)
+									render();
 								}
 								if(direction=="right"){
-									updateStrapWidth(5);
+									updateStrapWidth(5)
+									render();
 								}
 							}
 							
