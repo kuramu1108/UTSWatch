@@ -7,9 +7,9 @@
 		
 		<title>UTS WATCH MINIFAB</title>
 		
-		<script type="text/javascript" src="pointer/build/pointer.min.js"></script>
+		<script type="text/javascript" src="pointer/build/pointer.js"></script>
 
-		<link rel="shortcut icon" href="../favicon.ico">
+<!-- 		<link rel="shortcut icon" href="../favicon.ico"> -->
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<link rel="stylesheet" type="text/css" href="css/animations.css" />
@@ -81,12 +81,17 @@
 			function map(min,max,v)
 			{
 				var temp = (max-min) * v;
-				return temp + min;
+				var temp2 = temp + min;
+				return temp2;
 			}
-			var thisOne = document.querySelector('#initialPhase');
+			var thisOne = document.getElementById("initialPhase");
 			thisOne.addEventListener('gesturescale', function(e)
 			{
 				strapWidth = map(15,18,e.scale);
+			});
+			
+			thisOne.addEventListener("gesturedoubletap", function() {
+				strapWidth = 18;
 			});
 			
 			initFirst();
