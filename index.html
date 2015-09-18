@@ -17,6 +17,10 @@
   		 <script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
    		 <script type="text/javascript" src="js/Geometry/stats.js"></script>
    		 <script type="text/javascript" src="js/Geometry/dat.gui.js"></script>	
+   		 
+   		 <!--- Pointer.js --->
+   		 <script type="text/javascript" src="pointer/js/pointer.js"></script>
+   		 <script type="text/javascript" src="pointer/js/scale.js"></script>
 	</head>
 	<body>
 	
@@ -56,140 +60,49 @@
 			<div class="pt-page pt-page-1">
 			<h3 align="center">2D MODEL</h3>
 			<div id="initialPhase"></div>
-			
+			<button onclick="updateStrapWidth()">change strap</button>
 			<!--- 2D Object Start Here -->
 			<!---- Initial screen ----->
 			<script type="text/javascript">
+			
+			//initial variables - threejs stuff
+			var scene, cameraOne, webGLRendererOne, shapeOne, lug, initialShape, initialLug;
+			
 			var ultimateStuff;
-							
-		    // once everything is loaded, we run our Three.js stuff.
-			    $(function () {
-	
-			        //var stats = initStats();
+			var strapWidth = 15;
 			
-			        // create a scene, that will hold all our elements such as objects, cameras and lights.
-			        var scene = new THREE.Scene();
+			function map(min,max,v)
+			{
+				var temp = (max-min) * v;
+				return temp + min;
+			}
+			var thisOne = document.querySelector('#initialPhase');
+			thisOne.addEventListener('gesturescale', function(e)
+			{
+				strapWidth = map(15,18,e.scale);
+			});
 			
-			        // create a camera, which defines where we're looking at.
-			        var camera = new THREE.PerspectiveCamera(45, window.innerWidth*2 / window.innerHeight, 0.1, 1000);
-					scene.add(camera);
-			        // create a render and set the size
-			        var webGLRenderer = new THREE.WebGLRenderer();
-			        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
-			        webGLRenderer.setSize(window.innerWidth, window.innerHeight/2);
-			        webGLRenderer.shadowMapEnabled = true;
-					
-					var initialShape = drawShape();
-			        var shape = createMesh(new THREE.ShapeGeometry(initialShape));
-			        // add the sphere to the scene
-			        scene.add(shape);
-			        
-			        var initialLug = drawLug();
-			        var lug = createMesh(new THREE.ShapeGeometry(initialLug));
-			        // add the sphere to the scene
-			        scene.add(lug);
-			        ultimateStuff = initialLug;
-			        initialLug.push(initialShape);
-			        // position and point the camera to the center of the scene
-			        camera.position.x = 0;
-			        camera.position.y = 0;
-			        camera.position.z = 150;
-			        camera.lookAt(new THREE.Vector3(0, 0, 0));
-			        
-			        scene.add( new THREE.AmbientLight( 0x001133 ) );
-	
-					var light = new THREE.PointLight( 0xffffff, 0.3 );
-					camera.add( light );
-					
-					var spotLight = new THREE.SpotLight( 0xffffff, 0.1 );
-					spotLight.position.set( 100, 100, 50 );
-					
-					spotLight.castShadow = true;
-					
-					spotLight.shadowMapWidth = 102;
-					spotLight.shadowMapHeight = 102;
-					
-					spotLight.shadowCameraNear = 50;
-					spotLight.shadowCameraFar = 400;
-					spotLight.shadowCameraFov = 300;
-					
-					scene.add( spotLight );
+			initFirst();
 			
-			        // add the output of the renderer to the html element
-			        $("#initialPhase").append(webGLRenderer.domElement);
-	
-			        // call the render function
-			        var step = 0;
+			function updateStrapWidth(){
+					strapWidth = 18;
+					clean();
+					stuffCreation();
+					renderThis();
+			}
 			
-			        // setup the control gui
-			        var controls = new function () {
 			
-			            this.amount = 0;
-			            this.bevelThickness = 0;
-			            this.bevelSize = 0;
-			            this.bevelEnabled = false;
-			            this.bevelSegments = 0;
-			            this.bevelEnabled = false;
-			            this.curveSegments = 0;
-			            this.steps = 0;
-						this.curveA = 0;
-						this.curveB = 0;
+			function renderThis() {
+	            // render using requestAnimationFrame
+	            requestAnimationFrame(renderThis);
+				webGLRendererOne.render(scene, cameraOne);
+			}
 			
-			            this.asGeom = function () {
-			                // remove the old plane
-			                scene.remove(shape);
-			                // create a new one
-			
-			                var options = {
-			                    amount: controls.amount,
-			                    bevelThickness: controls.bevelThickness,
-			                    bevelSize: controls.bevelSize,
-			                    bevelSegments: controls.bevelSegments,
-			                    bevelEnabled: controls.bevelEnabled,
-			                    curveSegments: controls.curveSegments,
-			                    steps: controls.steps,
-								curveA: controls.curveA,
-								curveB: controls.curveB
-			                };
-			
-			                shape = createMesh(new THREE.ExtrudeGeometry(drawShape(), options));
-			                // add it to the scene.
-			                scene.add(shape);
-			            };
-			
-			        }
-			
-			        render();
-			
-			        function drawShape() {
-			
-			            // create a basic shape
-			            var circle = new THREE.Shape();
-						var radius = 35;
-						
-						for (var i = 0; i < 360; i++) {
-							var pct = (i + 1) / 360;
-							var theta = pct * Math.PI * 2.0;
-							var x = radius * Math.cos(theta);
-							var y = radius * Math.sin(theta);
-							if (i == 0) 
-							{
-								circle.moveTo(x, y);
-							} else {
-								circle.lineTo(x, y);
-							}
-						}
-	
-						
-			            // return the shape
-			            return circle;
-			        }
-			        
-			        function drawLug() {
+			function drawLug() {
 						var lugs = [];
 			            // create a basic shape of lugs
 			            var trlug = new THREE.Shape();
-						var strapWidth = 15;
+						//var strapWidth = 15;
 						var form = 2;
 						var trox = strapWidth;
 						var troy = 46 - form * (strapWidth - 14);
@@ -277,9 +190,32 @@
 						lugs.push(tllug);
 			            return lugs;
 			        }
-	
 			
-			        function createMesh(geom) {
+			function drawShape() {
+			
+			            // create a basic shape
+			            var circle = new THREE.Shape();
+						var radius = 35;
+						
+						for (var i = 0; i < 360; i++) {
+							var pct = (i + 1) / 360;
+							var theta = pct * Math.PI * 2.0;
+							var x = radius * Math.cos(theta);
+							var y = radius * Math.sin(theta);
+							if (i == 0) 
+							{
+								circle.moveTo(x, y);
+							} else {
+								circle.lineTo(x, y);
+							}
+						}
+	
+						
+			            // return the shape
+			            return circle;
+			        }
+			        
+			function createMeshFirst(geom) {
 			
 			            //geom.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, 0));
 			
@@ -295,27 +231,113 @@
 			
 			            return mesh;
 			        }
+
+
+			function stuffCreation(){
+				initialShape = drawShape();
+			    shapeOne = createMeshFirst(new THREE.ShapeGeometry(initialShape));
+			    // add the sphere to the scene
+				scene.add(shapeOne);
+			        
+			    initialLug = drawLug();
+				lug = createMeshFirst(new THREE.ShapeGeometry(initialLug));
+			    // add the sphere to the scene
+		        scene.add(lug);
+		        ultimateStuff = initialLug;
+		        initialLug.push(initialShape);				
+			}
 			
-			        function createLine(shape, spaced) {
-			            if (!spaced) {
-			                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
-			                return mesh;
-			            } else {
-			                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
-			                return mesh;
-			            }
+			function clean(){
+				scene.remove(shapeOne);
+				scene.remove(lug);
+			}
+
+		    // once everything is loaded, we run our Three.js stuff.
+			function initFirst () {			
+			        // create a scene, that will hold all our elements such as objects, cameras and lights.
+			        scene = new THREE.Scene();
+			
+			        // create a camera, which defines where we're looking at.
+			        cameraOne = new THREE.PerspectiveCamera(45, window.innerWidth*2 / window.innerHeight, 0.1, 1000);
+					scene.add(cameraOne);
+			        // create a render and set the size
+			        webGLRendererOne = new THREE.WebGLRenderer();
+			        webGLRendererOne.setClearColor(new THREE.Color(0x000000, 1.0));
+			        webGLRendererOne.setSize(window.innerWidth, window.innerHeight/2);
+			        webGLRendererOne.shadowMapEnabled = true;
+					
+					stuffCreation();
+			        // position and point the camera to the center of the scene
+			        cameraOne.position.x = 0;
+			        cameraOne.position.y = 0;
+			        cameraOne.position.z = 150;
+			        cameraOne.lookAt(new THREE.Vector3(0, 0, 0));
+			        
+			        scene.add( new THREE.AmbientLight( 0x001133 ) );
+	
+					var light = new THREE.PointLight( 0xffffff, 0.3 );
+					cameraOne.add( light );
+					
+					var spotLight = new THREE.SpotLight( 0xffffff, 0.1 );
+					spotLight.position.set( 100, 100, 50 );
+					
+					spotLight.castShadow = true;
+					
+					spotLight.shadowMapWidth = 102;
+					spotLight.shadowMapHeight = 102;
+					
+					spotLight.shadowCameraNear = 50;
+					spotLight.shadowCameraFar = 400;
+					spotLight.shadowCameraFov = 300;
+					
+					scene.add( spotLight );
+			
+			        // add the output of the renderer to the html element
+			        $("#initialPhase").append(webGLRendererOne.domElement);
+	
+			        // call the render function
+			        var step = 0;
+			
+			        // setup the control gui
+			        var controls = new function () {
+			
+			            this.amount = 0;
+			            this.bevelThickness = 0;
+			            this.bevelSize = 0;
+			            this.bevelEnabled = false;
+			            this.bevelSegments = 0;
+			            this.bevelEnabled = false;
+			            this.curveSegments = 0;
+			            this.steps = 0;
+						this.curveA = 0;
+						this.curveB = 0;
+			
+			            this.asGeom = function () {
+			                // remove the old plane
+			                scene.remove(shape);
+			                // create a new one
+			
+			                var options = {
+			                    amount: controls.amount,
+			                    bevelThickness: controls.bevelThickness,
+			                    bevelSize: controls.bevelSize,
+			                    bevelSegments: controls.bevelSegments,
+			                    bevelEnabled: controls.bevelEnabled,
+			                    curveSegments: controls.curveSegments,
+			                    steps: controls.steps,
+								curveA: controls.curveA,
+								curveB: controls.curveB
+			                };
+			
+			                shape = createMesh(new THREE.ExtrudeGeometry(drawShape(), options));
+			                // add it to the scene.
+			                scene.add(shape);
+			            };
 			
 			        }
 			
-			        function render() {
-			            // render using requestAnimationFrame
-			            requestAnimationFrame(render);
-			            webGLRenderer.render(scene, camera);
-			        }
-		
-			        						    });
-			
-			
+			        renderThis();     		
+			   };	
 			</script>
 			
 			</div><!-- End of First Page -->
@@ -344,7 +366,7 @@
 				
 				        // create a render and set the size
 				        var webGLRenderer = new THREE.WebGLRenderer();
-				        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+				        webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
 				        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
 				        webGLRenderer.shadowMapEnabled = true;
 				
@@ -422,45 +444,7 @@
 				
 				            // create a basic shape
 				            var shape = ultimateStuff;
-							/*
-				            // startpoint
-				            shape.moveTo(10, 10);
-				
-				            // straight line upwards
-				            shape.lineTo(10, 40);
-				
-				            // the top of the figure, curve to the right
-				            shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
-				
-				            // spline back down
-				            shape.splineThru(
-				                    [new THREE.Vector2(32, 30),
-				                        new THREE.Vector2(28, 20),
-				                        new THREE.Vector2(30, 10),
-				                    ])
-				
-				            // curve at the bottom
-				            shape.quadraticCurveTo(20, 15, 10, 10);
-				
-				            // add 'eye' hole one
-				            var hole1 = new THREE.Path();
-				            hole1.absellipse(16, 24, 2, 3, 0, Math.PI * 2, true);
-				            shape.holes.push(hole1);
-				
-				            // add 'eye hole 2'
-				            var hole2 = new THREE.Path();
-				            hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
-				            shape.holes.push(hole2);
-				
-				            // add 'mouth'
-				            var hole3 = new THREE.Path();
-				            hole3.absarc(20, 16, 2, 0, Math.PI, true);
-				            shape.holes.push(hole3);
-							*/
 							
-							
-							
-				            // return the shape
 				            return shape;
 				        }
 				
@@ -469,24 +453,24 @@
 				            geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
 				
 				            // assign two materials
-				            var meshMaterial = new THREE.MeshNormalMaterial({transparent: true, opacity: 0.7});
+				            var meshMaterial = new THREE.MeshNormalMaterial({transparent: true, opacity: 1.0});
 				
 				            //  meshMaterial.side = THREE.DoubleSide;
 				            var wireFrameMat = new THREE.MeshBasicMaterial();
 				            wireFrameMat.wireframe = true;
 				
 				            // create a multimaterial
-				            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+				            var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
 				
 				            return mesh;
 				        }
 				
 				        function createLine(shape, spaced) {
 				            if (!spaced) {
-				                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+				                var mesh = new THREE.Line(shape.createPointsGeometry(), new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
 				                return mesh;
 				            } else {
-				                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xff3333, linewidth: 2 }));
+				                var mesh = new THREE.Line(shape.createSpacedPointsGeometry(20), new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
 				                return mesh;
 				            }
 				
@@ -501,21 +485,7 @@
 				            requestAnimationFrame(render);
 				            webGLRenderer.render(scene, camera);
 				        }
-				/*
-				        function initStats() {
-				
-				            var stats = new Stats();
-				            stats.setMode(0); // 0: fps, 1: ms
-				
-				            // Align top-left
-				            stats.domElement.style.position = 'absolute';
-				            stats.domElement.style.left = '0px';
-				            stats.domElement.style.top = '0px';
-				
-				            $("#Stats-output").append(stats.domElement);
-				
-				            return stats;
-				        }*/
+
 				    });
 				
 				
@@ -527,7 +497,7 @@
 			<h3 align="center">FINAL</h3>
 			<div id="modelRender">
 						<!--- CAD 3D Objects Start Here -->	    
-		        <script src="http://threejs.org/build/three.min.js"></script>
+<!-- 		        <script src="http://threejs.org/build/three.min.js"></script> -->
 		        <script src="http://threejs.org/examples/js/loaders/STLLoader.js"></script>       
 		        <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
 		        <script>
