@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>UTS Watch MiniFab ver. V</title>
+		
+		<!-- Navigation CSS -->		
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+	    <link href="css/documentation.css" rel="stylesheet" />
+
+		<!-- Navigation Menu Script -->
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+
+				// Define any icon actions before calling the toolbar
+				$('.toolbar-icons a').on('click', function( event ) {
+					event.preventDefault();
+				});
+
+				$('#normal-button').toolbar({content: '#user-options', position: 'top'});
+				$('#normal-button-bottom').toolbar({content: '#user-options', position: 'bottom'});
+				$('#normal-button-small').toolbar({content: '#user-options-small', position: 'top', hideOnClick: true});
+				$('#button-left').toolbar({content: '#user-options', position: 'left'});
+				$('#button-right').toolbar({content: '#user-options', position: 'right'});
+				$('#link-toolbar').toolbar({content: '#user-options', position: 'top'});
+
+			});
+		</script>
+				
+		<!-- Geometry Script -->
+		<script type="text/javascript" src="js/three.js"></script>
+<!-- 		<script type="text/javascript" src="js/Geometry/three_mod.js"></script> -->
+		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
+   		<script type="text/javascript" src="js/Geometry/stats.js"></script>
+   		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>	
+	</head>
+	<body>
+			<!-------------- 3D Geometry Start Here ------------------->
+						
+					<!-- Div which will hold the Output -->
+					<div id="WebGL-output" align="center"	>
+						<!-- Javascript code that runs our Three.js examples -->
+						<script type="text/javascript">
+						// initial variables
+						var scene, camera, webGLRenderer, shape, initialShape, initialLug, step;
+			
+						var ultimateStuff;
+						var strapWidth = 15;
+						
+						// helping function
+						
+						function map(min,max,v)
+						{
+							var temp = (max-min) * v;
+							var temp2 = temp + min;
+							return temp2;
+						}
+						//start rendering
+						init();
+						
+						//update function
+						function updateStrapWidth(){
+							strapWidth = 18;
+							clean();
+							shapeCreation();
+							render();
+						}
+						
+						function render() {						
+						    shape.rotation.y = step += 0.02;
+						
+							// render using requestAnimationFrame
+							requestAnimationFrame(render);
+							webGLRenderer.render(scene, camera);
+					    }
+					    
+					    function drawLug() {
+							var lugs = [];
+				            // create a basic shape of lugs
+				            var trlug = new THREE.Shape();
+							//var strapWidth = 15;
+							var form = 2;
+							var trox = strapWidth;
+							var troy = 46 - form * (strapWidth - 14);
+							var limit = 35;
+							trlug.moveTo(trox, troy);
+							trlug.lineTo(limit, 46 - form * (limit - 14));
+							trlug.lineTo(trox, (46 - form *(limit-14)));
+							trlug.lineTo(trox, troy);
+							
+							var bllug = new THREE.Shape();
+							var blox = -strapWidth;
+							var bloy = -46 + form * (strapWidth - 14);
+							bllug.moveTo(blox, bloy);
+							bllug.lineTo(-limit, -46 + form * (limit - 14));
+							bllug.lineTo(blox, -46 + form * (limit - 14));
+							bllug.lineTo(blox, bloy);
+							
+							var brlug = new THREE.Shape();
+							var brox = strapWidth;
+							var broy = -46 + form * (strapWidth - 14);
+							brlug.moveTo(brox, broy);
+							brlug.lineTo(limit, -46 + form * (limit - 14));
+							brlug.lineTo(brox, -46 + form * (limit - 14));
+							brlug.lineTo(brox, broy);
+		
+							var tllug = new THREE.Shape();
+							var tlox = -strapWidth;
+							var tloy = 46 - form * (strapWidth - 14);
+							tllug.moveTo(tlox, tloy);
+							tllug.lineTo(-limit, 46 - form * (limit - 14));
+							tllug.lineTo(tlox, 46 - form * (limit - 14));
+							tllug.lineTo(tlox, tloy);
+						// return the shape
+							lugs.push(trlug);
+							lugs.push(bllug);
+							lugs.push(brlug);
+							lugs.push(tllug);
+				            return lugs;
+				        }
+			
+						function drawShape() {
+			
+				            // create a basic shape
+				            var circle = new THREE.Shape();
+							var radius = 35;
+							
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = radius * Math.cos(theta);
+								var y = radius * Math.sin(theta);
+								if (i == 0) 
+								{
+									circle.moveTo(x, y);
+								} else {
+									circle.lineTo(x, y);
+								}
+							}
+		
+							
+				            // return the shape
+				            return circle;
+				        }
+				        
+				        function createMesh(geom) {
+						
+						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
+						
+						     // assign two materials
+						     var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+						
+						     //  meshMaterial.side = THREE.DoubleSide;
+						     var wireFrameMat = new THREE.MeshBasicMaterial();
+						     wireFrameMat.wireframe = true;
+						
+						     // create a multimaterial
+						     var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+						
+						     return mesh;
+						}
+						
+						function shapeCreation(){
+							initialShape = drawShape();
+						    //shapeOne = createMesh(new THREE.ShapeGeometry(initialShape));
+						    // add the sphere to the scene
+							//scene.add(shapeOne);
+						        
+						    initialLug = drawLug();
+							//lug = createMesh(new THREE.ShapeGeometry(initialLug));
+						    // add the sphere to the scene
+					        //scene.add(lug);
+					        ultimateStuff = initialLug;
+					        ultimateStuff.push(initialShape);				
+						}
+						
+						function clean(){
+							scene.remove(shape);
+						}
+			
+
+
+						    // once everything is loaded, we run our Three.js stuff.
+						function init() {						
+							// create a scene, that will hold all our elements such as objects, cameras and lights.
+						    scene = new THREE.Scene();
+				
+							// create a camera, which defines where we're looking at.
+						    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+							
+							// create a render and set the size
+						    webGLRenderer = new THREE.WebGLRenderer();
+							webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
+						    webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+						    webGLRenderer.shadowMapEnabled = true;
+						
+							shapeCreation();
+							shape = createMesh(new THREE.ShapeGeometry(ultimateStuff));
+							scene.add(shape);
+							
+					        // position and point the camera to the center of the scene
+					        camera.position.x = 0;
+					        camera.position.y = 0;
+					        camera.position.z = 150;
+					        camera.lookAt(new THREE.Vector3(0, 0, 0));
+							
+							//scene.add( new THREE.AmbientLight( 0xffffff ) );
+	
+							var light1 = new THREE.PointLight( 0xffffff, 0.3 );
+							light1.position.set(0, 0, 150);
+							scene.add( light1 );
+							
+							var light2 = new THREE.PointLight( 0xffffff, 0.3 );
+							light2.position.set(-50, 50, 50);
+							scene.add( light2 );
+							
+							var light3 = new THREE.PointLight( 0xffffff, 0.3 );
+							light3.position.set(50, 50, 50);
+							scene.add( light3 );
+							
+
+					        // add the output of the renderer to the html element
+					        $("#WebGL-output").append(webGLRenderer.domElement);
+						
+					        // call the render function
+					        step = 0;
+						
+					        // setup the control gui
+					        var controls = new function () {
+						
+						        this.amount = 2;
+						        this.bevelThickness = 2;
+								this.bevelSize = 0.5;
+						        this.bevelEnabled = true;
+						        this.bevelSegments = 3;
+								this.bevelEnabled = true;
+						        this.curveSegments = 12;
+						        this.steps = 1;
+								this.curveA = 10;
+								this.curveB = 15;
+						
+						        this.asGeom = function () {
+						            // remove the old plane
+						            scene.remove(shape);
+									// create a new one
+						
+					                var options = {
+						                    amount: controls.amount,
+						                    bevelThickness: controls.bevelThickness,
+						                    bevelSize: controls.bevelSize,
+						                    bevelSegments: controls.bevelSegments,
+						                    bevelEnabled: controls.bevelEnabled,
+						                    curveSegments: controls.curveSegments,
+						                    steps: controls.steps,
+											curveA: controls.curveA,
+											curveB: controls.curveB
+						            };
+						
+						            shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            // add it to the scene.
+									scene.add(shape);
+						        };
+						
+						    }
+						        
+								// Chris : Here applied CSS to change location of dropdown menu
+								// CSS at component.css line 332
+						        var gui = new dat.GUI();
+								gui.domElement.id = 'gui';
+						        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
+						        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
+						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
+								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
+						
+						        controls.asGeom(); //changes the values, removes the old plane, draws a new shape to the screen
+						        render();
+						
+					    }
+						
+						
+						</script></div> <!-- The Geometry End Here -->
+						
+		<!-- Navigation Menu -->
+		<div class="container">
+			<ul id="gn-menu" class="gn-menu-main">
+				<li class="gn-trigger">
+					<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+					<nav class="gn-menu-wrapper">
+						<div class="gn-scroller">
+							<ul class="gn-menu">
+								<li class="">
+									<input placeholder="Search" type="search" class="gn-search">
+									<a class="gn-icon gn-icon-search"><span>Search</span></a>
+								</li>
+								<li>
+									<a class="gn-icon gn-icon-download">Edit</a>
+									<ul class="gn-submenu">
+										<li><a class="gn-icon gn-icon-illustrator">Account</a></li>
+										<li><a class="gn-icon gn-icon-article">Sample Design</a></li>
+									</ul>
+								</li>
+								<li><a class="gn-icon gn-icon-cog">Settings</a></li>
+								<li><a class="gn-icon gn-icon-help">Help</a></li>
+							</ul>
+						</div><!-- /gn-scroller -->
+					</nav>
+				</li>
+				<li><a href="index.html">UTS Watch MiniFab</a></li>
+				<li><a class="" href=""><span>Log In</span></a></li>
+			</ul>
+		</div><!-- menu container end -->
+		
+		<!-- Script for Navigation Menu -->
+		<script src="js/classie.js"></script>
+		<script src="js/gnmenu.js"></script>
+		<script>
+			new gnMenu( document.getElementById( 'gn-menu' ) );
+		</script>
+	</body>
+</html>
