@@ -54,8 +54,8 @@
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
 						// initial variables
-						var scene, camera, webGLRenderer, shape, initialShape, initialLug, step, controls;
-			
+						var scene, camera, webGLRenderer, shape, initialShape, initialLug, step, controls, controlLug;
+						var mainShape, lugShape;
 						var ultimateStuff;
 						var strapWidth = 15;
 						
@@ -97,6 +97,7 @@
 						function updateStrapWidth(){
 							shapeCreation();
 							controls.asGeom();
+							controlLug.asGeom();
 						}
 									
 						function render() {	
@@ -113,37 +114,31 @@
 				            var trlug = new THREE.Shape();
 							//var strapWidth = 15;
 							var form = 2;
-							var trox = strapWidth;
-							var troy = 46 - form * (strapWidth - 14);
-							var limit = 35;
-							trlug.moveTo(trox, troy);
+							var ox = strapWidth;
+							var oy = 46 - form * (strapWidth - 14);
+							var limit = 25;
+							trlug.moveTo(ox, oy);
 							trlug.lineTo(limit, 46 - form * (limit - 14));
-							trlug.lineTo(trox, (46 - form *(limit-14)));
-							trlug.lineTo(trox, troy);
+							trlug.lineTo(ox, (46 - form *(limit-14)));
+							trlug.lineTo(ox, oy);
 							
 							var bllug = new THREE.Shape();
-							var blox = -strapWidth;
-							var bloy = -46 + form * (strapWidth - 14);
-							bllug.moveTo(blox, bloy);
+							bllug.moveTo(-ox, -oy);
 							bllug.lineTo(-limit, -46 + form * (limit - 14));
-							bllug.lineTo(blox, -46 + form * (limit - 14));
-							bllug.lineTo(blox, bloy);
+							bllug.lineTo(-ox, -46 + form * (limit - 14));
+							bllug.lineTo(-ox, -oy);
 							
 							var brlug = new THREE.Shape();
-							var brox = strapWidth;
-							var broy = -46 + form * (strapWidth - 14);
-							brlug.moveTo(brox, broy);
+							brlug.moveTo(ox, -oy);
 							brlug.lineTo(limit, -46 + form * (limit - 14));
-							brlug.lineTo(brox, -46 + form * (limit - 14));
-							brlug.lineTo(brox, broy);
+							brlug.lineTo(ox, -46 + form * (limit - 14));
+							brlug.lineTo(ox, -oy);
 		
 							var tllug = new THREE.Shape();
-							var tlox = -strapWidth;
-							var tloy = 46 - form * (strapWidth - 14);
-							tllug.moveTo(tlox, tloy);
+							tllug.moveTo(-ox, oy);
 							tllug.lineTo(-limit, 46 - form * (limit - 14));
-							tllug.lineTo(tlox, 46 - form * (limit - 14));
-							tllug.lineTo(tlox, tloy);
+							tllug.lineTo(-ox, 46 - form * (limit - 14));
+							tllug.lineTo(-ox, oy);
 						// return the shape
 							lugs.push(trlug);
 							lugs.push(bllug);
@@ -189,6 +184,7 @@
 						
 						     // create a multimaterial
 						     var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+						     //var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
 						
 						     return mesh;
 						}
@@ -263,23 +259,21 @@
 						
 					        // setup the control gui
 					        controls = new function () {
-						
 						        this.amount = 2;
 						        this.bevelThickness = 2;
 								this.bevelSize = 0.5;
-						        this.bevelEnabled = true;
 						        this.bevelSegments = 3;
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
 								this.curveA = 10;
 								this.curveB = 15;
-						
 						        this.asGeom = function () {
 						            // remove the old plane
-						            scene.remove(shape);
+						            //scene.remove(shape);
+						            scene.remove(mainShape);
 									// create a new one
-						
+
 					                var options = {
 						                    amount: controls.amount,
 						                    bevelThickness: controls.bevelThickness,
@@ -292,9 +286,48 @@
 											curveB: controls.curveB
 						            };
 						
-						            shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            mainShape = createMesh(new THREE.ExtrudeGeometry(initialShape, options));
 						            // add it to the scene.
-									scene.add(shape);
+									//scene.add(shape);
+									scene.add(mainShape);
+						        };
+						
+						    }
+						    
+						    controlLug = new function () {
+						        this.amount = 2;
+						        this.bevelThickness = 1;
+								this.bevelSize = 0.5;
+						        this.bevelSegments = 3;
+								this.bevelEnabled = true;
+						        this.curveSegments = 12;
+						        this.steps = 1;
+								this.curveA = 10;
+								this.curveB = 15;
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(lugShape);
+									// create a new one
+
+					                var options = {
+						                    amount: controlLug.amount,
+						                    bevelThickness: controlLug.bevelThickness,
+						                    bevelSize: controlLug.bevelSize,
+						                    bevelSegments: controlLug.bevelSegments,
+						                    bevelEnabled: controlLug.bevelEnabled,
+						                    curveSegments: controlLug.curveSegments,
+						                    steps: controlLug.steps,
+											curveA: controlLug.curveA,
+											curveB: controlLug.curveB
+						            };
+						
+						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            lugShape = createMesh(new THREE.ExtrudeGeometry(initialLug, options));
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(lugShape);
 						        };
 						
 						    }
@@ -312,9 +345,10 @@
 						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
 								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
 								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
-						
-						        controls.asGeom(); //changes the values, removes the old plane, draws a new shape to the screen
-						        shape.rotation.y = 150;
+						        controls.asGeom();
+						        controlLug.asGeom();
+						        //changes the values, removes the old plane, draws a new shape to the screen
+						        //shape.rotation.y = 150;
 						        render();
 						
 					    }
