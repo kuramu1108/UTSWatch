@@ -37,15 +37,14 @@
    		<script type="text/javascript" src="js/Geometry/stats.js"></script>
    		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<style>
-	   		#WebGL-output {
-		   		overflow: hidden;
-		   		-ms-touch-action: none;
-		   	}
+	   		
 		</style>	
 	</head>
 	<body>
 			<!-------------- 3D Geometry Start Here ------------------->
-					<button onclick="updateStrapWidth()">change strap</button>	
+				<div id="test" align="center"></div>
+					<button onclick="updateStrapWidth()">change strap</button>
+					<canvas id="WebGLcanvas" width="1038" height="400" style="width: 1038px; height: 400px;"></canvas>	
 					<!-- Div which will hold the Output -->
 					<div id="WebGL-output" align="center"	>
 						<!-- Javascript code that runs our Three.js examples -->
@@ -64,6 +63,17 @@
 							var temp2 = temp + min;
 							return temp2;
 						}
+						
+						var thisOne = document.getElementById("WebGLcanvas");
+						thisOne.addEventListener('gesturescale', function(e)
+						{
+							strapWidth = map(15,18,e.scale);
+						});
+						
+						thisOne.addEventListener("gesturedoubletap", function() {
+							updateStrapWidth();
+						});
+
 						//start rendering
 						init();
 						
@@ -185,7 +195,9 @@
 
 
 						    // once everything is loaded, we run our Three.js stuff.
-						function init() {						
+						function init() {
+							
+							var container = document.getElementById( "WebGLcanvas" );					
 							// create a scene, that will hold all our elements such as objects, cameras and lights.
 						    scene = new THREE.Scene();
 				
@@ -193,7 +205,7 @@
 						    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 							
 							// create a render and set the size
-						    webGLRenderer = new THREE.WebGLRenderer();
+						    webGLRenderer = new THREE.WebGLRenderer({canvas: container});
 							webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
 						    webGLRenderer.setSize(window.innerWidth, window.innerHeight);
 						    webGLRenderer.shadowMapEnabled = true;
@@ -222,7 +234,7 @@
 							
 
 					        // add the output of the renderer to the html element
-					        $("#WebGL-output").append(webGLRenderer.domElement);
+					        //$("#WebGL-output").append(webGLRenderer.domElement);
 						
 					        // call the render function
 					        step = 0;
@@ -285,7 +297,8 @@
 					    }
 						
 						
-						</script></div> <!-- The Geometry End Here -->
+						</script>
+				</div> <!-- The Geometry End Here -->
 						
 		<!-- Navigation Menu -->
 		<div class="container">
