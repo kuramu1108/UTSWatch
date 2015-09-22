@@ -70,9 +70,11 @@
 						thisOne.addEventListener('gesturescale', function(e)
 						{
 							strapWidth = map(15,18,e.scale);
+							updateStrapWidth()
 						});
 						
 						thisOne.addEventListener("gesturedoubletap", function() {
+							strapWidth = 18;
 							updateStrapWidth();
 						});
 
@@ -81,7 +83,6 @@
 						
 						//update function
 						function updateStrapWidth(){
-							strapWidth = map(15, 20, 0.6);
 							shapeCreation();
 							controls.asGeom();
 						}
