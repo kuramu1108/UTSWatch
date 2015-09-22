@@ -42,7 +42,6 @@
 	</head>
 	<body>
 			<!-------------- 3D Geometry Start Here ------------------->
-				<div id="test" align="center"></div>
 					<button onclick="updateStrapWidth()">change strap</button>
 					<canvas id="WebGLcanvas" width="1038" height="400" style="width: 1038px; height: 400px;"></canvas>	
 					<!-- Div which will hold the Output -->
@@ -64,7 +63,7 @@
 							return temp2;
 						}
 						
-						var thisOne = document.getElementById("WebGLcanvas");
+						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
 						{
 							strapWidth = map(15,18,e.scale);
@@ -234,7 +233,7 @@
 							
 
 					        // add the output of the renderer to the html element
-					        //$("#WebGL-output").append(webGLRenderer.domElement);
+					        //container.appendChild(webGLRenderer.domElement);
 						
 					        // call the render function
 					        step = 0;
@@ -295,8 +294,6 @@
 						        render();
 						
 					    }
-						
-						
 						</script>
 				</div> <!-- The Geometry End Here -->
 						
