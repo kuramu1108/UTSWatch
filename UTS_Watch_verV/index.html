@@ -61,20 +61,27 @@
 						
 						// helping function
 						
-						function map(min,max,v)
+						function map(current, min,max,v)
 						{
-							var temp = (max-min) * v;
-							var temp2 = temp + min;
-							return temp2;
+							if (v >= 1)
+							{
+								var temp = current + v * 0.2;
+								if (temp >= max)
+									temp = max;
+							}
+							else
+							{
+								var temp = current * v;
+								if (temp <= min)
+									temp = min;
+							}
+							return temp;
 						}
 						
 						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
 						{
-							if(strapWidth <= 18)
-								strapWidth += e.scale;
-							else
-								strapWidth = 18;
+							strapWidth = map(strapWidth,15,18,e.scale);
 							updateStrapWidth();
 						});
 						
