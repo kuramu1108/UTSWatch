@@ -71,8 +71,11 @@
 						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
 						{
-							strapWidth = map(15,18,e.scale);
-							updateStrapWidth()
+							if(strapWidth <= 18)
+								strapWidth += e.scale;
+							else
+								strapWidth = 18;
+							updateStrapWidth();
 						});
 						
 						thisOne.addEventListener("gesturedoubletap", function() {
