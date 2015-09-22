@@ -165,8 +165,22 @@
 									circle.lineTo(x, y);
 								}
 							}
-		
 							
+							var hole = new THREE.Path();
+							var iRadius = 26;
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = iRadius * Math.cos(theta);
+								var y = iRadius * Math.sin(theta);
+								if (i == 0) 
+								{
+									hole.moveTo(x, y);
+								} else {
+									hole.lineTo(x, y);
+								}
+							}
+							circle.holes.push(hole);
 				            // return the shape
 				            return circle;
 				        }
