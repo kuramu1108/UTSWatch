@@ -10,10 +10,9 @@
 		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 	    <link href="css/documentation.css" rel="stylesheet" />
-		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
+
 		<!-- Navigation Menu Script -->
-		<!--
-<script type="text/javascript">
+		<script type="text/javascript">
 			jQuery(document).ready(function($) {
 
 				// Define any icon actions before calling the toolbar
@@ -30,11 +29,11 @@
 
 			});
 		</script>
--->
 				
 		<!-- Geometry Script -->
-		<script type="text/javascript" src="js/three.js"></script>
-<!-- 		<script type="text/javascript" src="js/Geometry/three_mod.js"></script> -->
+		<!-- <script type="text/javascript" src="js/three.js"></script> -->
+		<script type="text/javascript" src="js/Geometry/three_mod2.js"></script>
+		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
    		<script type="text/javascript" src="js/Geometry/stats.js"></script>
    		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<script type="text/javascript" src="js/OrbitControls.js"></script>
@@ -149,10 +148,14 @@
 				        }
 			
 						function drawShape() {
+						
+							this.bevelOffset = 0.5;
+							this.innerRing = 26;
 			
 				            // create a basic shape
 				            var circle = new THREE.Shape();
-							var radius = 35;
+							//var radius = 35;
+							var radius = 35 - drawShape.bevelOffset;
 							
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
@@ -168,7 +171,8 @@
 							}
 							
 							var hole = new THREE.Path();
-							var iRadius = 26;
+							//var iRadius = 26;
+							var iRadius = 0 + drawShape.bevelOffset + drawShape.innerRing;
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
 								var theta = pct * Math.PI * 2.0;
@@ -277,22 +281,27 @@
 						        this.amount = 2;
 						        this.bevelThickness = 2;
 								this.bevelSize = 0.5;
-						        this.bevelSegments = 3;
+						        this.bevelSegments = 10;
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
 								this.curveA = 10;
 								this.curveB = 15;
+								this.innerRing = 26;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
 						            scene.remove(mainShape);
-									// create a new one
+									
+									//offset the size of the circle radius by how big the bevel is
+									drawShape.bevelOffset = controls.bevelSize;
+									drawShape.innerRing = controls.innerRing;
 
 					                var options = {
 						                    amount: controls.amount,
 						                    bevelThickness: controls.bevelThickness,
 						                    bevelSize: controls.bevelSize,
+											innerRing: controls.innerRing,
 						                    bevelSegments: controls.bevelSegments,
 						                    bevelEnabled: controls.bevelEnabled,
 						                    curveSegments: controls.curveSegments,
@@ -301,8 +310,10 @@
 											curveB: controls.curveB
 						            };
 						
+									// create a new one
+									
 						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
-						            mainShape = createMesh(new THREE.ExtrudeGeometry(initialShape, options));
+						            mainShape = createMesh(new THREE.ExtrudeGeometry(drawShape(), options));
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(mainShape);
@@ -354,10 +365,13 @@
 						        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
 						        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
 						        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
-						        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
-						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+								gui.add(controls, 'innerRing', 10, 30).onChange(controls.asGeom);
+								
+								//The following controls were hidden because they are not used client-side.
+						        //gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
+						        //gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
+						        //gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
+						        //gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
 								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
 								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
 						        controls.asGeom();
