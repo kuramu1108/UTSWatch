@@ -10,15 +10,24 @@
 		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 	    <link href="css/documentation.css" rel="stylesheet" />
-		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
-				
+
+		
 		<!-- Geometry Script -->
 		<script type="text/javascript" src="js/three.js"></script>
 <!-- 		<script type="text/javascript" src="js/Geometry/three_mod.js"></script> -->
+		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
    		<script type="text/javascript" src="js/Geometry/stats.js"></script>
    		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<script type="text/javascript" src="js/OrbitControls.js"></script>
    		<script type="text/javascript" src="js/pointer.js"></script>
+   		<script type="text/javascript" src="js/STLExporter.js"></script>
+   		<script type="text/javascript" src="js/FileSaver.js"></script>
+   		<script type="text/javascript" src="http://paulkaplan.me/Experiments/PixelPrinter/javascripts/mesh.js"></script>
+   		<script type="text/javascript" src="http://paulkaplan.me/Experiments/lib/js/detector.js"></script>
+   		
+   		
+   		
+   		
 
    		<style>
 	   		#WebGLcanvas {
@@ -35,10 +44,18 @@
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
 						// initial variables
-						var scene, camera, webGLRenderer, shape, initialShape, initialLug, step, controls, controlLug;
-						var mainShape, lugShape;
-						var ultimateStuff;
+						var scene, camera, webGLRenderer, shape, step, controls, controlLug, options, options2;
+						var exportFile;
+						// variable for shape holder
+						var initialBezel, initialLug, initialFace, initialCrown;
+						// variable for mesh holder
+						var bezelMesh, lugMesh, faceMesh, crownMseh;
+						// variable for control holder
+						var controlFace, controlCrown;
+						// variable for extrude option holder
+						var faceOptions, crownOptions;
 						var strapWidth = 15;
+						var bezel_radius = 35;					  
 						
 						// helping function
 						
@@ -59,6 +76,7 @@
 							return temp;
 						}
 						
+						//touch event enable
 						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
 						{
@@ -70,9 +88,11 @@
 							strapWidth = 18;
 							updateStrapWidth();
 						});
-
+						
+						
 						//start rendering
 						init();
+						
 						
 						//update function
 						function updateStrapWidth(){
@@ -128,11 +148,11 @@
 				            return lugs;
 				        }
 			
-						function drawShape() {
+						function drawBezel(r) {
 			
 				            // create a basic shape
 				            var circle = new THREE.Shape();
-							var radius = 35;
+							radius = r;
 							
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
@@ -166,6 +186,50 @@
 				            return circle;
 				        }
 				        
+				        function drawWatchFace(r){
+				        // create a basic shape
+				            var circle = new THREE.Shape();
+							radius = r;
+							
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = radius * Math.cos(theta);
+								var y = radius * Math.sin(theta);
+								if (i == 0) 
+								{
+									circle.moveTo(x, y);
+								} else {
+									circle.lineTo(x, y);
+								}
+							}
+							
+						    return circle;
+				        }
+						
+						function drawCrown(){
+							// create a basic shape
+				            var circle = new THREE.Shape();
+							radius = 5;
+							
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = radius * Math.cos(theta);
+								var y = radius * Math.sin(theta);
+								if (i == 0) 
+								{
+									circle.moveTo(x, y);
+								} else {
+									circle.lineTo(x, y);
+								}
+							}
+							
+							return circle;
+				        }
+
+				        
+				        
 				        function createMesh(geom) {
 						
 						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
@@ -185,17 +249,11 @@
 						}
 						
 						function shapeCreation(){
-							initialShape = drawShape();
-						    //shapeOne = createMesh(new THREE.ShapeGeometry(initialShape));
-						    // add the sphere to the scene
-							//scene.add(shapeOne);
-						        
+							initialBezel = drawBezel(bezel_radius);
 						    initialLug = drawLug();
-							//lug = createMesh(new THREE.ShapeGeometry(initialLug));
-						    // add the sphere to the scene
-					        //scene.add(lug);
-					        ultimateStuff = initialLug;
-					        ultimateStuff.push(initialShape);				
+						    initialFace = drawWatchFace(bezel_radius);
+						    initialCrown = drawCrown();
+				
 						}
 			
 
@@ -246,13 +304,17 @@
 							var light5 = new THREE.PointLight( 0xffffff, 0.3 );
 							light5.position.set(-50, 50, -50);
 							scene.add( light5 );
+							
+							var light6 = new THREE.PointLight( 0xffffff, 0.3 );
+							light6.position.set(50, 0, 0);
+							scene.add( light6 );
 					        // add the output of the renderer to the html element
 					        //container.appendChild(webGLRenderer.domElement);
 						
 					        // call the render function
 					        step = 0;
 						
-					        // setup the control gui
+					        // setup the control for Bezel
 					        controls = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 2;
@@ -266,10 +328,10 @@
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
-						            scene.remove(mainShape);
+						            scene.remove(bezelMesh);
 									// create a new one
 
-					                var options = {
+					                options = {
 						                    amount: controls.amount,
 						                    bevelThickness: controls.bevelThickness,
 						                    bevelSize: controls.bevelSize,
@@ -282,14 +344,17 @@
 						            };
 						
 						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
-						            mainShape = createMesh(new THREE.ExtrudeGeometry(initialShape, options));
+						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, options));
 						            // add it to the scene.
 									//scene.add(shape);
-									scene.add(mainShape);
-						        };
+									
+									
+									scene.add(bezelMesh);
+															        };
 						
 						    }
 						    
+							// control for lug
 						    controlLug = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 1;
@@ -303,10 +368,10 @@
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
-						            scene.remove(lugShape);
+						            scene.remove(lugMesh);
 									// create a new one
 
-					                var options = {
+					                options2 = {
 						                    amount: controlLug.amount,
 						                    bevelThickness: controlLug.bevelThickness,
 						                    bevelSize: controlLug.bevelSize,
@@ -319,10 +384,76 @@
 						            };
 						
 						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
-						            lugShape = createMesh(new THREE.ExtrudeGeometry(initialLug, options));
+						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, options2));
 						            // add it to the scene.
 									//scene.add(shape);
-									scene.add(lugShape);
+									scene.add(lugMesh);
+						        };
+						
+						    }
+							// control for watch face
+						    controlFace = new function () {
+						        this.amount = .5;
+						        this.bevelThickness = 0;
+								this.bevelSize = 0;
+						        this.bevelSegments = 0;
+								this.bevelEnabled = false;
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(faceMesh);
+									// create a new one
+
+					                faceOptions = {
+						                    amount: controlFace.amount,
+						                    bevelThickness: controlFace.bevelThickness,
+						                    bevelSize: controlFace.bevelSize,
+						                    bevelSegments: controlFace.bevelSegments,
+						                    bevelEnabled: controlFace.bevelEnabled,
+						                    
+						            };
+						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions));
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(faceMesh);
+						        };
+						
+						    }
+						    // control for crown
+						    controlCrown = new function () {
+						        this.amount = 2;
+						        this.bevelThickness = 1;
+								this.bevelSize = 0.5;
+						        this.bevelSegments = 3;
+								this.bevelEnabled = true;
+						        this.curveSegments = 12;
+						        this.steps = 1;
+								this.curveA = 10;
+								this.curveB = 15;
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(crownMseh);
+									// create a new one
+
+					                crownOptions = {
+						                    amount: controlCrown.amount,
+						                    bevelThickness: controlCrown.bevelThickness,
+						                    bevelSize: controlCrown.bevelSize,
+						                    bevelSegments: controlCrown.bevelSegments,
+						                    bevelEnabled: controlCrown.bevelEnabled,
+						                    curveSegments: controlCrown.curveSegments,
+						                    steps: controlCrown.steps,
+											curveA: controlCrown.curveA,
+											curveB: controlCrown.curveB
+						            };
+						
+						            crownMseh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions));
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(crownMseh);
+									crownMseh.rotation.y = Math.PI/2;
+									crownMseh.position.set(bezel_radius - this.amount/2, 0, 0);
 						        };
 						
 						    }
@@ -338,15 +469,38 @@
 						        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
 						        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
 						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
-								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
-								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
+
 						        controls.asGeom();
 						        controlLug.asGeom();
+						        controlFace.asGeom();
+						        controlCrown.asGeom();
 						        //changes the values, removes the old plane, draws a new shape to the screen
 						        //shape.rotation.y = 150;
 						        render();
-						
+
 					    }
+					    
+					    //EXPORT###
+					   
+					    function save() {
+					     	exportFile = new THREE.ExtrudeGeometry(initialBezel, options);
+						 	var geometry_p2 = new THREE.ExtrudeGeometry(initialLug, options2);
+					    
+						 	THREE.GeometryUtils.merge( exportFile, geometry_p2 );
+							var stl = startExport();
+
+							var blob = new Blob([stl], {type: 'text/plain'});
+							saveAs(blob, 'pixel_printer.stl');
+						}
+							
+						function startExport(){
+
+							var stl = generateSTL( exportFile );
+							return stl;
+						}
+					    //EXPORT###
+					    
+				
 						</script>
 				</div> <!-- The Geometry End Here -->
 						
@@ -375,8 +529,8 @@
 						</div><!-- /gn-scroller -->
 					</nav>
 				</li>
-				<li><a href="../index.html">UTS Watch</a></li>
-				<li><a class="" href="">Log In</a></li>
+				<li><a href="index.html">UTS Watch</a></li>
+				<li><a class="" href="javascript:save();">Export</a></li>
 			</ul>
 		</div><!-- menu container end -->
 		
