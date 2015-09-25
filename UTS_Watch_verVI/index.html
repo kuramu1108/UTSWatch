@@ -494,7 +494,7 @@
 						            };
 						
 						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
-						            var strapMesh2 = strapMesh.clone();
+						            var strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(strapMesh);
