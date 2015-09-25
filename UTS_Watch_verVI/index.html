@@ -49,7 +49,7 @@
 						// variable for shape holder
 						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
 						// variable for mesh holder
-						var bezelMesh, lugMesh, faceMesh, crownMesh, strapMesh;
+						var bezelMesh, lugMesh, faceMesh, crownMesh, strapMesh, strapMesh2;
 						// variable for control holder
 						var bezelControls, lugControls, faceControls, crownControls, strapControls;
 						// variable for extrude option holder
@@ -495,7 +495,7 @@
 						            };
 						
 						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
-						            var strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
+						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(strapMesh);
