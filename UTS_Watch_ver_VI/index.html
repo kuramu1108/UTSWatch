@@ -43,17 +43,19 @@
 					<div id="WebGL-output" align="center"	>
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
-						// initial variables
-						var scene, camera, webGLRenderer, shape, step, controls, controlLug, options, options2;
+						// variable for setting up the scene three.js and WebGL
+						var scene, camera, webGLRenderer, step;
 						var exportFile;
 						// variable for shape holder
-						var initialBezel, initialLug, initialFace, initialCrown;
+						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
 						// variable for mesh holder
-						var bezelMesh, lugMesh, faceMesh, crownMseh;
+						var bezelMesh, lugMesh, faceMesh, crownMesh, strapMesh;
 						// variable for control holder
-						var controlFace, controlCrown;
+						var bezelControls, lugControls, faceControls, crownControls, strapControls;
 						// variable for extrude option holder
-						var faceOptions, crownOptions;
+						var bezelOptions, lugOptions, faceOptions, crownOptions, strapOptions;
+						
+						
 						var strapWidth = 15;
 						var bezel_radius = 35;					  
 						
@@ -96,9 +98,8 @@
 						
 						//update function
 						function updateStrapWidth(){
-							shapeCreation();
-							controls.asGeom();
-							controlLug.asGeom();
+							initialLug = drawLug();
+							lugControls.asGeom();
 						}
 									
 						function render() {	
@@ -227,6 +228,17 @@
 							
 							return circle;
 				        }
+				        
+				        function drawStrap(){
+							// create a basic shape
+				            var rect = new THREE.Shape();
+							rect.moveTo(strapWidth, 1);
+							rect.lineTo(strapWidth, -1);
+							rect.lineTo(-strapWidth, -1);
+							rect.lineTo(-strapWidth, 1);
+							rect.lineTo(strapWidth, 1);
+							return rect;
+				        }
 
 				        
 				        
@@ -253,6 +265,7 @@
 						    initialLug = drawLug();
 						    initialFace = drawWatchFace(bezel_radius);
 						    initialCrown = drawCrown();
+						    initialStrap = drawStrap();
 				
 						}
 			
@@ -315,7 +328,7 @@
 					        step = 0;
 						
 					        // setup the control for Bezel
-					        controls = new function () {
+					        bezelControls = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 2;
 								this.bevelSize = 0.5;
@@ -326,36 +339,30 @@
 								this.curveA = 10;
 								this.curveB = 15;
 						        this.asGeom = function () {
-						            // remove the old plane
-						            //scene.remove(shape);
 						            scene.remove(bezelMesh);
 									// create a new one
 
-					                options = {
-						                    amount: controls.amount,
-						                    bevelThickness: controls.bevelThickness,
-						                    bevelSize: controls.bevelSize,
-						                    bevelSegments: controls.bevelSegments,
-						                    bevelEnabled: controls.bevelEnabled,
-						                    curveSegments: controls.curveSegments,
-						                    steps: controls.steps,
-											curveA: controls.curveA,
-											curveB: controls.curveB
+					                bezelOptions = {
+						                    amount: bezelControls.amount,
+						                    bevelThickness: bezelControls.bevelThickness,
+						                    bevelSize: bezelControls.bevelSize,
+						                    bevelSegments: bezelControls.bevelSegments,
+						                    bevelEnabled: bezelControls.bevelEnabled,
+						                    curveSegments: bezelControls.curveSegments,
+						                    steps: bezelControls.steps,
+											curveA: bezelControls.curveA,
+											curveB: bezelControls.curveB
 						            };
 						
-						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
-						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, options));
-						            // add it to the scene.
-									//scene.add(shape);
-									
-									
+						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions));
+						            // add it to the scene.									
 									scene.add(bezelMesh);
-															        };
+								};
 						
 						    }
 						    
 							// control for lug
-						    controlLug = new function () {
+						    lugControls = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 1;
 								this.bevelSize = 0.5;
@@ -371,20 +378,20 @@
 						            scene.remove(lugMesh);
 									// create a new one
 
-					                options2 = {
-						                    amount: controlLug.amount,
-						                    bevelThickness: controlLug.bevelThickness,
-						                    bevelSize: controlLug.bevelSize,
-						                    bevelSegments: controlLug.bevelSegments,
-						                    bevelEnabled: controlLug.bevelEnabled,
-						                    curveSegments: controlLug.curveSegments,
-						                    steps: controlLug.steps,
-											curveA: controlLug.curveA,
-											curveB: controlLug.curveB
+					                lugOptions = {
+						                    amount: lugControls.amount,
+						                    bevelThickness: lugControls.bevelThickness,
+						                    bevelSize: lugControls.bevelSize,
+						                    bevelSegments: lugControls.bevelSegments,
+						                    bevelEnabled: lugControls.bevelEnabled,
+						                    curveSegments: lugControls.curveSegments,
+						                    steps: lugControls.steps,
+											curveA: lugControls.curveA,
+											curveB: lugControls.curveB
 						            };
 						
 						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
-						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, options2));
+						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions));
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(lugMesh);
@@ -392,7 +399,7 @@
 						
 						    }
 							// control for watch face
-						    controlFace = new function () {
+						    faceControls = new function () {
 						        this.amount = .5;
 						        this.bevelThickness = 0;
 								this.bevelSize = 0;
@@ -405,11 +412,11 @@
 									// create a new one
 
 					                faceOptions = {
-						                    amount: controlFace.amount,
-						                    bevelThickness: controlFace.bevelThickness,
-						                    bevelSize: controlFace.bevelSize,
-						                    bevelSegments: controlFace.bevelSegments,
-						                    bevelEnabled: controlFace.bevelEnabled,
+						                    amount: faceControls.amount,
+						                    bevelThickness: faceControls.bevelThickness,
+						                    bevelSize: faceControls.bevelSize,
+						                    bevelSegments: faceControls.bevelSegments,
+						                    bevelEnabled: faceControls.bevelEnabled,
 						                    
 						            };
 						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions));
@@ -420,7 +427,7 @@
 						
 						    }
 						    // control for crown
-						    controlCrown = new function () {
+						    crownControls = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 1;
 								this.bevelSize = 0.5;
@@ -433,27 +440,67 @@
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
-						            scene.remove(crownMseh);
+						            scene.remove(crownMesh);
 									// create a new one
 
 					                crownOptions = {
-						                    amount: controlCrown.amount,
-						                    bevelThickness: controlCrown.bevelThickness,
-						                    bevelSize: controlCrown.bevelSize,
-						                    bevelSegments: controlCrown.bevelSegments,
-						                    bevelEnabled: controlCrown.bevelEnabled,
-						                    curveSegments: controlCrown.curveSegments,
-						                    steps: controlCrown.steps,
-											curveA: controlCrown.curveA,
-											curveB: controlCrown.curveB
+						                    amount: crownControls.amount,
+						                    bevelThickness: crownControls.bevelThickness,
+						                    bevelSize: crownControls.bevelSize,
+						                    bevelSegments: crownControls.bevelSegments,
+						                    bevelEnabled: crownControls.bevelEnabled,
+						                    curveSegments: crownControls.curveSegments,
+						                    steps: crownControls.steps,
+											curveA: crownControls.curveA,
+											curveB: crownControls.curveB
 						            };
 						
-						            crownMseh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions));
+						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions));
 						            // add it to the scene.
 									//scene.add(shape);
-									scene.add(crownMseh);
-									crownMseh.rotation.y = Math.PI/2;
-									crownMseh.position.set(bezel_radius - this.amount/2, 0, 0);
+									scene.add(crownMesh);
+									crownMesh.rotation.y = Math.PI/2;
+									crownMesh.position.set(bezel_radius - this.amount/2, 0, 0);
+						        };
+						
+						    }
+						    //control for strap
+						    strapControls = new function () {
+								this.bevelEnabled = false;
+						        this.steps = 200;
+								var roundPath = [];
+								for (var i = 0; i < 180; i++) {
+									var pct = (i + 1) / 360;
+									var theta = pct * Math.PI * 2.0;
+									var y = 35 * Math.cos(theta);
+									var z = 35 * Math.sin(theta);
+									roundPath.push(new THREE.Vector3(0, y, z));
+								}
+
+								this.extrudePath = new THREE.SplineCurve3(roundPath);
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(strapMesh);
+									// create a new one
+
+					                strapOptions = {
+						                    
+						                    bevelEnabled: strapControls.bevelEnabled,
+						                    steps: strapControls.steps,
+											extrudePath: strapControls.extrudePath
+						            };
+						
+						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
+						            var strapMesh2 = strapMesh.clone();
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(strapMesh);
+									scene.add(strapMesh2);
+									strapMesh.rotation.x = Math.PI/2;
+									strapMesh.position.set(0, -bezel_radius, -35);
+									strapMesh2.rotation.x = -Math.PI/2;
+									strapMesh2.position.set(0, bezel_radius, -35);
 						        };
 						
 						    }
@@ -462,29 +509,31 @@
 								// CSS at component.css line 332
 						        var gui = new dat.GUI();
 								gui.domElement.id = 'gui';
-						        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
-						        gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
-						        gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
-						        gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+						        gui.add(bezelControls, 'amount', 0, 20).onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'bevelThickness', 0, 10).onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'bevelSize', 0, 10).onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'bevelSegments', 0, 30).step(1).onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'bevelEnabled').onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'curveSegments', 1, 30).step(1).onChange(bezelControls.asGeom);
+						        gui.add(bezelControls, 'steps', 1, 5).step(1).onChange(bezelControls.asGeom);
 
-						        controls.asGeom();
-						        controlLug.asGeom();
-						        controlFace.asGeom();
-						        controlCrown.asGeom();
+						        bezelControls.asGeom();
+						        lugControls.asGeom();
+						        faceControls.asGeom();
+						        crownControls.asGeom();
+						        strapControls.asGeom();
 						        //changes the values, removes the old plane, draws a new shape to the screen
 						        //shape.rotation.y = 150;
 						        render();
 
 					    }
 					    
+					    
 					    //EXPORT###
 					   
 					    function save() {
-					     	exportFile = new THREE.ExtrudeGeometry(initialBezel, options);
-						 	var geometry_p2 = new THREE.ExtrudeGeometry(initialLug, options2);
+					     	exportFile = new THREE.ExtrudeGeometry(initialBezel, bezelOptions);
+						 	var geometry_p2 = new THREE.ExtrudeGeometry(initialLug, lugOptions);
 					    
 						 	THREE.GeometryUtils.merge( exportFile, geometry_p2 );
 							var stl = startExport();
