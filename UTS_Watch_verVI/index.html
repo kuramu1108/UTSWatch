@@ -20,6 +20,7 @@
    		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<script type="text/javascript" src="js/OrbitControls.js"></script>
    		<script type="text/javascript" src="js/pointer.js"></script>
+<!--       	<script type="text/javascript" src="js/Projector.js"></script> -->
    		<script type="text/javascript" src="js/STLExporter.js"></script>
    		<script type="text/javascript" src="js/FileSaver.js"></script>
    		<script type="text/javascript" src="http://paulkaplan.me/Experiments/PixelPrinter/javascripts/mesh.js"></script>
@@ -38,7 +39,7 @@
 	</head>
 	<body>
 			<!-------------- 3D Geometry Start Here ------------------->
-					<canvas id="WebGLcanvas" width="1038" height="400" style="width: 1038px; height: 400px;"></canvas>	
+					<canvas id="WebGLcanvas"></canvas>	
 					<!-- Div which will hold the Output -->
 					<div id="WebGL-output" align="center"	>
 						<!-- Javascript code that runs our Three.js examples -->
@@ -55,6 +56,10 @@
 						// variable for extrude option holder
 						var bezelOptions, lugOptions, faceOptions, crownOptions, strapOptions;
 						
+						// variable for selecting object
+						var raycaster = new THREE.Raycaster()						
+						var mouse = new THREE.Vector2();
+						var meshCollection = [];
 						
 						var strapWidth = 15;
 						var bezel_radius = 35;					  
@@ -90,6 +95,47 @@
 							strapWidth = 18;
 							updateStrapWidth();
 						});
+						
+						function onWindowResize() {
+			
+			                camera.aspect = window.innerWidth / window.innerHeight;
+			
+			                camera.updateProjectionMatrix();
+			
+			                webGLRenderer.setSize( window.innerWidth, window.innerHeight );
+			
+			            }
+						
+						function onDocumentTouchStart( event ) {
+				
+							event.preventDefault();
+							
+							event.clientX = event.touches[0].clientX;
+							event.clientY = event.touches[0].clientY;
+							onDocumentMouseDown( event );
+			
+						}	
+						var planes = [];
+						function onDocumentMouseDown( event ) {
+			
+							event.preventDefault();
+			
+							mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
+							mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
+							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+							//projector.unproject( vector, camera );
+							vector.unproject(camera);
+							raycaster.setFromCamera( mouse, camera );
+							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+							var intersects = raycaster.intersectObjects( meshCollection, true);
+							console.log(intersects.toString());
+							if ( intersects.length > 0 ) {
+			
+								intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
+								console.log("in if");
+			
+							}
+						}
 						
 						
 						//start rendering
@@ -245,7 +291,6 @@
 				        
 				        
 				        function createMesh(geom) {
-						
 						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
 						
 						     // assign two materials
@@ -282,7 +327,7 @@
 				
 							// create a camera, which defines where we're looking at.
 						    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-							
+							scene.add(camera);
 							// create a render and set the size
 						    webGLRenderer = new THREE.WebGLRenderer({canvas: container});
 							webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
@@ -325,7 +370,26 @@
 							scene.add( light6 );
 					        // add the output of the renderer to the html element
 					        //container.appendChild(webGLRenderer.domElement);
-						
+					        
+					        var plane = new THREE.Mesh(
+								new THREE.PlaneBufferGeometry( 5000, 20, 8, 8 ),
+								new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
+							);
+							plane.visible = true;
+							scene.add( plane );
+							var plane2 = new THREE.Mesh(
+								new THREE.PlaneBufferGeometry( 20, 2000, 8, 8 ),
+								new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
+							);
+							plane2.visible = true;
+							scene.add( plane2 );
+							planes.push(plane);
+							planes.push(plane2);
+														
+							webGLRenderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+							webGLRenderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
+							
+							window.addEventListener( 'resize', onWindowResize, false );
 					        // call the render function
 					        step = 0;
 						
@@ -359,6 +423,7 @@
 						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions));
 						            // add it to the scene.									
 									scene.add(bezelMesh);
+									meshCollection.push(bezelMesh);
 								};
 						
 						    }
@@ -397,6 +462,7 @@
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(lugMesh);
+									meshCollection.push(lugMesh);
 						        };
 						
 						    }
@@ -425,6 +491,7 @@
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(faceMesh);
+									meshCollection.push(faceMesh);
 						        };
 						
 						    }
@@ -463,6 +530,7 @@
 									scene.add(crownMesh);
 									crownMesh.rotation.y = Math.PI/2;
 									crownMesh.position.set(bezel_radius - this.amount/2, 0, 0);
+									meshCollection.push(crownMesh);
 						        };
 						
 						    }
@@ -504,6 +572,8 @@
 									strapMesh.position.set(0, -bezel_radius, -35);
 									strapMesh2.rotation.x = -Math.PI/2;
 									strapMesh2.position.set(0, bezel_radius, -35);
+									meshCollection.push(strapMesh);
+									meshCollection.push(strapMesh2);
 						        };
 						
 						    }
