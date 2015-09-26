@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0"> 
+		<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0"> 
 		<title>UTS Watch MiniFab ver. V</title>
 		
 		<!-- Navigation CSS -->		
@@ -20,7 +20,6 @@
    		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<script type="text/javascript" src="js/OrbitControls.js"></script>
    		<script type="text/javascript" src="js/pointer.js"></script>
-<!--       	<script type="text/javascript" src="js/Projector.js"></script> -->
    		<script type="text/javascript" src="js/STLExporter.js"></script>
    		<script type="text/javascript" src="js/FileSaver.js"></script>
    		<script type="text/javascript" src="http://paulkaplan.me/Experiments/PixelPrinter/javascripts/mesh.js"></script>
@@ -35,13 +34,23 @@
 			    overflow: hidden;
 			    -ms-touch-action: none;
 			}
+			#WebGLcanvas {
+			    position: absolute;
+			    top:0;
+			    bottom: 0;
+			    left: 0;
+			    right: 0;
+			    margin:auto;
+			}
 		</style>	
 	</head>
+	
 	<body>
 			<!-------------- 3D Geometry Start Here ------------------->
-					<canvas id="WebGLcanvas"></canvas>	
+						
 					<!-- Div which will hold the Output -->
-					<div id="WebGL-output" align="center"	>
+					<canvas id="WebGLcanvas"></canvas>
+<!-- 					<div id="WebGL-output"></div>  -->
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
 						// variable for setting up the scene three.js and WebGL
@@ -65,7 +74,6 @@
 						var bezel_radius = 35;					  
 						
 						// helping function
-						
 						function map(current, min,max,v)
 						{
 							if (v >= 1)
@@ -125,14 +133,13 @@
 							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
 							//projector.unproject( vector, camera );
 							vector.unproject(camera);
-							raycaster.setFromCamera( mouse, camera );
+							//raycaster.setFromCamera( mouse, camera );
 							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 							var intersects = raycaster.intersectObjects( meshCollection, true);
 							console.log(intersects.toString());
 							if ( intersects.length > 0 ) {
 			
 								intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-								console.log("in if");
 			
 							}
 						}
@@ -375,7 +382,8 @@
 								new THREE.PlaneBufferGeometry( 5000, 20, 8, 8 ),
 								new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
 							);
-							plane.visible = true;
+							/*
+plane.visible = true;
 							scene.add( plane );
 							var plane2 = new THREE.Mesh(
 								new THREE.PlaneBufferGeometry( 20, 2000, 8, 8 ),
@@ -385,6 +393,7 @@
 							scene.add( plane2 );
 							planes.push(plane);
 							planes.push(plane2);
+*/
 														
 							webGLRenderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
 							webGLRenderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
@@ -441,7 +450,6 @@
 								this.curveB = 15;
 						        this.asGeom = function () {
 						            // remove the old plane
-						            //scene.remove(shape);
 						            scene.remove(lugMesh);
 									// create a new one
 
@@ -457,10 +465,8 @@
 											curveB: lugControls.curveB
 						            };
 						
-						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
 						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions));
 						            // add it to the scene.
-									//scene.add(shape);
 									scene.add(lugMesh);
 									meshCollection.push(lugMesh);
 						        };
@@ -624,7 +630,7 @@
 					    
 				
 						</script>
-				</div> <!-- The Geometry End Here -->
+				<!-- The Geometry End Here -->
 						
 		<!-- Navigation Menu -->
 		<div class="container">
