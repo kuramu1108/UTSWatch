@@ -91,6 +91,17 @@
 							return temp;
 						}
 						
+						function repopulateArray()
+						{
+							meshCollection = [];
+							meshCollection.push(bezelMesh);
+							meshCollection.push(lugMesh);
+							meshCollection.push(faceMesh);
+							meshCollection.push(crownMesh);
+							meshCollection.push(strapMesh);
+							meshCollection.push(strapMesh2);
+						}
+						
 						//touch event enable
 						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
@@ -157,13 +168,7 @@
 							lugControls.asGeom();
 							initialStrap = drawStrap();
 							strapControls.asGeom();
-							meshCollection = [];
-							meshCollection.push(bezelMesh);
-								meshCollection.push(lugMesh);
-								meshCollection.push(faceMesh);
-								meshCollection.push(crownMesh);
-								meshCollection.push(strapMesh);
-								meshCollection.push(strapMesh2);
+							repopulateArray();
 						}
 									
 						function render() {	
@@ -441,6 +446,7 @@ plane.visible = true;
 						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions));
 						            // add it to the scene.									
 									scene.add(bezelMesh);
+									repopulateArray();
 								};
 						
 						    }
@@ -605,12 +611,7 @@ plane.visible = true;
 						        faceControls.asGeom();
 						        crownControls.asGeom();
 						        strapControls.asGeom();
-								meshCollection.push(bezelMesh);
-								meshCollection.push(lugMesh);
-								meshCollection.push(faceMesh);
-								meshCollection.push(crownMesh);
-								meshCollection.push(strapMesh);
-								meshCollection.push(strapMesh2);
+								repopulateArray();
 						        //changes the values, removes the old plane, draws a new shape to the screen
 						        //shape.rotation.y = 150;
 						        render();
