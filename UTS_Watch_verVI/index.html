@@ -24,6 +24,7 @@
    		<script type="text/javascript" src="js/FileSaver.js"></script>
    		<script type="text/javascript" src="js/mesh.js"></script>
    		<script type="text/javascript" src="js/detector.js"></script>
+   		<script type="text/javascript" src="js/STLExporter.js"></script>
    		
    		
    		
@@ -71,8 +72,8 @@
 						var meshCollection = [];
 						var SELECTED = null;
 						var strapWidth = 15;
-						var bezel_radius = 35;					  
-						
+						var bezel_radius = 35;
+
 						// helping function
 						function map(current, min,max,v)
 						{
@@ -392,23 +393,7 @@
 					        // add the output of the renderer to the html element
 					        //container.appendChild(webGLRenderer.domElement);
 					        
-					        var plane = new THREE.Mesh(
-								new THREE.PlaneBufferGeometry( 5000, 20, 8, 8 ),
-								new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
-							);
-							/*
-plane.visible = true;
-							scene.add( plane );
-							var plane2 = new THREE.Mesh(
-								new THREE.PlaneBufferGeometry( 20, 2000, 8, 8 ),
-								new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } )
-							);
-							plane2.visible = true;
-							scene.add( plane2 );
-							planes.push(plane);
-							planes.push(plane2);
-*/
-														
+					        																					
 							webGLRenderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
 							webGLRenderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
 							
@@ -621,21 +606,9 @@ plane.visible = true;
 					    
 					    //EXPORT###
 					   
-					    function save() {
-					     	exportFile = new THREE.ExtrudeGeometry(initialBezel, bezelOptions);
-						 	var geometry_p2 = new THREE.ExtrudeGeometry(initialLug, lugOptions);
-					    
-						 	THREE.GeometryUtils.merge( exportFile, geometry_p2 );
-							var stl = startExport();
-
-							var blob = new Blob([stl], {type: 'text/plain'});
-							saveAs(blob, 'pixel_printer.stl');
-						}
-							
-						function startExport(){
-
-							var stl = generateSTL( exportFile );
-							return stl;
+						function save()
+						{
+							saveSTL(scene, 'yourWatch');
 						}
 					    //EXPORT###
 					    
