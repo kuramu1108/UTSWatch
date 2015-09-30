@@ -21,6 +21,7 @@
    		<script type="text/javascript" src="js/pointer.js"></script>
    		<script type="text/javascript" src="js/STLExporter.js"></script>
    		<script type="text/javascript" src="js/FileSaver.js"></script>
+   		<script type="text/javascript" src="js/lodash.js"></script>
    		<style>
 	   		#WebGLcanvas {
 			    overflow: hidden;
@@ -51,7 +52,12 @@
 						// variable for shape holder
 						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
 						// variable for mesh holder
-						var bezelMesh, lugMesh, faceMesh, crownMesh, strapMesh, strapMesh2;
+						var bezelMesh = new THREE.Mesh();
+						var lugMesh = new THREE.Mesh();
+						var faceMesh = new THREE.Mesh();
+						var crownMesh = new THREE.Mesh();
+						var strapMesh = new THREE.Mesh();
+						var strapMesh2 = new THREE.Mesh();
 						// variable for control holder
 						var bezelControls, lugControls, faceControls, crownControls, strapControls;
 						// variable for extrude option holder
@@ -62,9 +68,10 @@
 						var mouse = new THREE.Vector2();
 						var meshCollection = [];
 						var SELECTED = null;
+						var MODE = "bezel-amount";
 						var strapWidth = 15;
 						var bezel_radius = 35;
-
+						
 						// helping function
 						function map(current, min,max,v)
 						{
@@ -98,13 +105,15 @@
 						var thisOne = document.getElementById( "WebGLcanvas" );
 						thisOne.addEventListener('gesturescale', function(e)
 						{
-							strapWidth = map(strapWidth,15,18,e.scale);
-							updateStrapWidth();
+							//strapWidth = map(strapWidth,15,18,e.scale);
+							//updateStrapWidth();
+							updateValueScale(e.scale);
 						});
 						
 						thisOne.addEventListener("gesturedoubletap", function() {
-							strapWidth = 18;
-							updateStrapWidth();
+							//strapWidth = 18;
+							//updateStrapWidth();
+							updateValueDoubleTap();
 						});
 						
 						function onWindowResize() {
@@ -126,7 +135,7 @@
 							onDocumentMouseDown( event );
 			
 						}	
-						var planes = [];
+						
 						function onDocumentMouseDown( event ) {
 			
 							event.preventDefault();
@@ -139,7 +148,6 @@
 							//raycaster.setFromCamera( mouse, camera );
 							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 							var intersects = raycaster.intersectObjects( meshCollection, true);
-							console.log(intersects.toString());
 							if ( intersects.length > 0 ) {
 								if (SELECTED){
 									SELECTED.object.material.color.setHex( 0x96b0be );
@@ -162,7 +170,59 @@
 							strapControls.asGeom();
 							repopulateArray();
 						}
-									
+						
+						function updateValueScale(v)
+						{
+							if (SELECTED.object.name == "bezel"){
+								switch(MODE)
+								{
+									case "bezel-amount":
+									bezelControls.amount = map(bezelControls.amount, 0,10, v);
+									updateBezel();
+									break;
+									case "bezel-bevelThickness":
+									bezelControls.bevelThickness = map(bezelControls.bevelThickness, 0,10, v);
+									updateBezel();
+									break;
+									case "bezel-bezelSize":
+									bezelControls.bezelSize = map(bezelControls.bezelSize, 0,10, v);
+									updateBezel();
+									break;
+									default:
+									break;
+								}
+							} else {}
+						}
+						
+						function updateValueDoubleTap()
+						{
+							if (SELECTED.object.name == "bezel"){
+								switch(MODE)
+								{
+									case "bezel-amount":
+									bezelControls.amount = 2;
+									updateBezel();
+									break;
+									case "bezel-bevelThickness":
+									bezelControls.bevelThickness = 2;
+									updateBezel();
+									break;
+									case "bezel-bezelSize":
+									bezelControls.bezelSize = 0.5;
+									updateBezel();
+									break;
+									default:
+									break;
+								}
+							} else {
+							}
+						}
+						
+						function updateBezel(){
+							bezelControls.asGeom();
+							repopulateArray();
+						}
+						//render function		
 						function render() {	
 						    //shape.rotation.y = step += 0.02;
 							
@@ -316,7 +376,8 @@
 						     // create a multimaterial
 						     var mesh = new THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
 						     //var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
-						
+						     
+							 // the return type of mesh is OBject3D, the mesh object is in its children[0] property   by Po-Hao
 						     return mesh;
 						}
 						
@@ -348,8 +409,8 @@
 						    webGLRenderer.shadowMapEnabled = true;
 						
 							shapeCreation();
-							var controler = new THREE.OrbitControls(camera, webGLRenderer.domElement);
-							controler.noZoom = true;
+							var cameraControl = new THREE.OrbitControls(camera, webGLRenderer.domElement);
+							cameraControl.noZoom = true;
 					        // position and point the camera to the center of the scene
 					        camera.position.x = 0;
 					        camera.position.y = 0;
@@ -401,8 +462,7 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
-								this.curveA = 10;
-								this.curveB = 15;
+						        
 						        this.asGeom = function () {
 						            scene.remove(bezelMesh);
 									// create a new one
@@ -414,20 +474,21 @@
 						                    bevelSegments: bezelControls.bevelSegments,
 						                    bevelEnabled: bezelControls.bevelEnabled,
 						                    curveSegments: bezelControls.curveSegments,
-						                    steps: bezelControls.steps,
-											curveA: bezelControls.curveA,
-											curveB: bezelControls.curveB
+						                    steps: bezelControls.steps
 						            };
 						
 						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions));
+						            bezelMesh.children[0].controler = bezelControls;
+									bezelMesh.children[0].name = "bezel";
 						            // add it to the scene.									
 									scene.add(bezelMesh);
 									repopulateArray();
 								};
+								
 						
 						    }
-						    
-							// control for lug
+						    // create property in Mesh for controler
+						    							// control for lug
 						    lugControls = new function () {
 						        this.amount = 2;
 						        this.bevelThickness = 1;
@@ -436,8 +497,6 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
-								this.curveA = 10;
-								this.curveB = 15;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            scene.remove(lugMesh);
@@ -450,9 +509,7 @@
 						                    bevelSegments: lugControls.bevelSegments,
 						                    bevelEnabled: lugControls.bevelEnabled,
 						                    curveSegments: lugControls.curveSegments,
-						                    steps: lugControls.steps,
-											curveA: lugControls.curveA,
-											curveB: lugControls.curveB
+						                    steps: lugControls.steps
 						            };
 						
 						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions));
@@ -479,7 +536,7 @@
 						                    bevelThickness: faceControls.bevelThickness,
 						                    bevelSize: faceControls.bevelSize,
 						                    bevelSegments: faceControls.bevelSegments,
-						                    bevelEnabled: faceControls.bevelEnabled,
+						                    bevelEnabled: faceControls.bevelEnabled
 						                    
 						            };
 						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions));
@@ -498,8 +555,6 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
-								this.curveA = 10;
-								this.curveB = 15;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
@@ -513,9 +568,7 @@
 						                    bevelSegments: crownControls.bevelSegments,
 						                    bevelEnabled: crownControls.bevelEnabled,
 						                    curveSegments: crownControls.curveSegments,
-						                    steps: crownControls.steps,
-											curveA: crownControls.curveA,
-											curveB: crownControls.curveB
+						                    steps: crownControls.steps
 						            };
 						
 						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions));
@@ -558,7 +611,6 @@
 						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
 						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
 						            // add it to the scene.
-									//scene.add(shape);
 									scene.add(strapMesh);
 									scene.add(strapMesh2);
 									strapMesh.rotation.x = Math.PI/2;
@@ -578,7 +630,6 @@
 						        gui.add(bezelControls, 'bevelThickness', 0, 10).onChange(bezelControls.asGeom);
 						        gui.add(bezelControls, 'bevelSize', 0, 10).onChange(bezelControls.asGeom);
 						        gui.add(bezelControls, 'bevelSegments', 0, 30).step(1).onChange(bezelControls.asGeom);
-						        gui.add(bezelControls, 'bevelEnabled').onChange(bezelControls.asGeom);
 						        gui.add(bezelControls, 'curveSegments', 1, 30).step(1).onChange(bezelControls.asGeom);
 						        gui.add(bezelControls, 'steps', 1, 5).step(1).onChange(bezelControls.asGeom);
 
@@ -638,9 +689,9 @@
 		</div><!-- menu container end -->
 		
 		<nav class="bottom-bar">
-	      <button class="bottom-btn">sth</button>
-	      <button class="bottom-btn"><img src="img/button-icon/favorite-icon-white.png"></button>
-	      <button class="bottom-btn"><img src="img/button-icon/share-icon-white.png"></button>
+	      <button class="bottom-btn" name="bezel-amount">sth</button>
+	      <button class="bottom-btn" name="bezel-bevelThickness"><img src="img/button-icon/favorite-icon-white.png"></button>
+	      <button class="bottom-btn" name="bezel-bevelSize"><img src="img/button-icon/share-icon-white.png"></button>
 	    </nav>
 		<!-- Script for Navigation Menu -->
 		<script src="js/classie.js"></script>
