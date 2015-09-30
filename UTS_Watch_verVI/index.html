@@ -207,8 +207,8 @@
 									bezelControls.bevelThickness = 2;
 									updateBezel();
 									break;
-									case "bezel-bezelSize":
-									bezelControls.bezelSize = 0.5;
+									case "bezel-bevelSize":
+									bezelControls.bevelSize = 0.5;
 									updateBezel();
 									break;
 									default:
@@ -221,6 +221,11 @@
 						function updateBezel(){
 							bezelControls.asGeom();
 							repopulateArray();
+						}
+						
+						function changeMODE(mode){
+							MODE = mode;
+							console.log(MODE);
 						}
 						//render function		
 						function render() {	
@@ -689,9 +694,10 @@
 		</div><!-- menu container end -->
 		
 		<nav class="bottom-bar">
-	      <button class="bottom-btn" name="bezel-amount">sth</button>
-	      <button class="bottom-btn" name="bezel-bevelThickness"><img src="img/button-icon/favorite-icon-white.png"></button>
-	      <button class="bottom-btn" name="bezel-bevelSize"><img src="img/button-icon/share-icon-white.png"></button>
+	      <button class="bottom-btn" name="bezel-amount" onclick="changeMODE(this.name)">Amo</button>
+<!-- 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)"><img src="img/button-icon/favorite-icon-white.png"></button> -->
+	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
+	      <button class="bottom-btn" name="bezel-bevelSize" onclick="changeMODE(this.name)">siz</button>
 	    </nav>
 		<!-- Script for Navigation Menu -->
 		<script src="js/classie.js"></script>
