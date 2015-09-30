@@ -379,7 +379,7 @@ input.gn-search:focus {
 	margin: 8px;
 	padding: 8px;
 	border: none;
-	background-color: rgba(193, 201, 209, 0.6);
+	background-color: rgba(95,111,129, 0.6);
 	border-radius: 100%;
 	-webkit-transition: background-color 0.1s ease-out;
 	transition: background-color 0.1s ease-out;
@@ -387,16 +387,16 @@ input.gn-search:focus {
 }
 
 .bottom-bar button:hover {
-	background-color: rgba(193, 201, 209, 0.8);
+	background-color: rgba(76,88,103, 0.8);
 }
 
 .bottom-bar button:focus {
-	background-color: rgba(193, 201, 209, 0.8);
+	background-color: rgba(76,88,103, 0.8);
 	outline: 0;
 }
 
 .bottom-bar button:active {
-	background-color: rgba(193, 201, 209, 1.0);
+	background-color: rgba(57,66,77, 1.0);
 }
 
 img{
