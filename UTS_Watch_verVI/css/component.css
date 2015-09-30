@@ -315,7 +315,7 @@ input.gn-search:focus {
 		-webkit-transform: translateX(0px);
 		-moz-transform: translateX(0px);
 		transform: translateX(0px);
-		width: 20%;
+		width: 50%;
 	}
 	.gn-menu-wrapper.gn-open-all .gn-scroller {
 		width: 130%
