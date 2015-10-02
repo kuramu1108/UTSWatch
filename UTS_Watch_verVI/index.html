@@ -655,7 +655,11 @@
 					   
 						function save()
 						{
+							scene.remove(strapMesh);
+							scene.remove(strapMesh2);
 							saveSTL(scene, 'yourWatch');
+							scene.add(strapMesh);
+							scene.add(strapMesh2);
 						}
 					    //EXPORT###
 					    
