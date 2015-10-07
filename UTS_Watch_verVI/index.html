@@ -509,6 +509,10 @@
 						            // add it to the scene.									
 									scene.add(bezelMesh);
 									repopulateArray();
+									if (SELECTED && SELECTED.object.name == "bezel")
+									{
+										SELECTED.object = bezelMesh.children[0];
+									}
 								};
 								
 						
@@ -539,7 +543,7 @@
 						                    steps: lugControls.steps
 						            };
 						
-						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions), false);
+						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions), this.isSelected);
 						            lugMesh.children[0].controler = lugControls;
 						            lugMesh.children[0].name = "lug";
 						            // add it to the scene.
@@ -569,7 +573,7 @@
 						                    bevelEnabled: faceControls.bevelEnabled
 						                    
 						            };
-						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions), false);
+						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions), this.isSelected);
 						            faceMesh.children[0].controler = faceControls;
 						            faceMesh.children[0].name = "face";
 						            // add it to the scene.
@@ -604,7 +608,7 @@
 						                    steps: crownControls.steps
 						            };
 						
-						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions), false);
+						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions), this.isSelected);
 						            crownMesh.children[0].controler = crownControls;
 						            crownMesh.children[0].name = "crown";
 						            // add it to the scene.
@@ -644,11 +648,11 @@
 											extrudePath: strapControls.extrudePath
 						            };
 						
-						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), false);
-						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), false);
+						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
+						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
 						            strapMesh.children[0].controler = strapControls;
 						            strapMesh.children[0].name = "strap";
-						            strapMesh.children[0].controler = strapControls;
+						            strapMesh2.children[0].controler = strapControls;
 						            strapMesh2.children[0].name = "strap2";
 						            // add it to the scene.
 									scene.add(strapMesh);
