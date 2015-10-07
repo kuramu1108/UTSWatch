@@ -69,6 +69,7 @@
 						var meshCollection = [];
 						var SELECTED = null;
 						var MODE = "bezel-amount";
+						var isOk = true;
 						var strapWidth = 15;
 						var bezel_radius = 35;
 						
@@ -140,21 +141,28 @@
 			
 							event.preventDefault();
 			
-							mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
-							mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
-							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
-							//projector.unproject( vector, camera );
-							vector.unproject(camera);
-							//raycaster.setFromCamera( mouse, camera );
-							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-							var intersects = raycaster.intersectObjects( meshCollection, true);
-							if ( intersects.length > 0 ) {
-								if (SELECTED){
-									SELECTED.object.material.color.setHex( 0x96b0be );
+							if (isOk)
+							{
+								mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
+								mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
+								var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+								//projector.unproject( vector, camera );
+								vector.unproject(camera);
+								//raycaster.setFromCamera( mouse, camera );
+								raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+								var intersects = raycaster.intersectObjects( meshCollection, true);
+								if ( intersects.length > 0 ) {
+									if (SELECTED){
+										SELECTED.object.material.color.setHex( 0x96b0be );
+										SELECTED.object.controler.isSelected = false;
+									}
+									intersects[ 0 ].object.material.color.setHex( 0xec5252 );
+									SELECTED = intersects[0];
+									SELECTED.object.controler.isSelected = true;
+									isOk = false;
 								}
-								intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-								SELECTED = intersects[0];
 							}
+							else{console.log("is not ok");}
 						}
 						
 						
@@ -226,6 +234,11 @@
 						function changeMODE(mode){
 							MODE = mode;
 							console.log(MODE);
+						}
+						
+						function allGood()
+						{
+							isOk = true;
 						}
 						//render function		
 						function render() {	
@@ -368,11 +381,18 @@
 
 				        
 				        
-				        function createMesh(geom) {
+				        function createMesh(geom, isSelec) {
 						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
 						
 						     // assign two materials
-						     var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+						     if (isSelec)
+						     {
+						     	var meshMaterial = new THREE.MeshPhongMaterial( { color: 0xec5252, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+						     }
+						     else
+						     {
+							    var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+						     }
 						
 						     //  meshMaterial.side = THREE.DoubleSide;
 						     var wireFrameMat = new THREE.MeshBasicMaterial();
@@ -467,6 +487,7 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
+						        this.isSelected = false;
 						        
 						        this.asGeom = function () {
 						            scene.remove(bezelMesh);
@@ -482,7 +503,7 @@
 						                    steps: bezelControls.steps
 						            };
 						
-						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions));
+						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions), this.isSelected);
 						            bezelMesh.children[0].controler = bezelControls;
 									bezelMesh.children[0].name = "bezel";
 						            // add it to the scene.									
@@ -502,6 +523,7 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
+						        this.isSelected = false;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            scene.remove(lugMesh);
@@ -517,7 +539,9 @@
 						                    steps: lugControls.steps
 						            };
 						
-						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions));
+						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions), false);
+						            lugMesh.children[0].controler = lugControls;
+						            lugMesh.children[0].name = "lug";
 						            // add it to the scene.
 									scene.add(lugMesh);
 						        };
@@ -530,6 +554,7 @@
 								this.bevelSize = 0;
 						        this.bevelSegments = 0;
 								this.bevelEnabled = false;
+								this.isSelected = false;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
@@ -544,7 +569,9 @@
 						                    bevelEnabled: faceControls.bevelEnabled
 						                    
 						            };
-						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions));
+						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions), false);
+						            faceMesh.children[0].controler = faceControls;
+						            faceMesh.children[0].name = "face";
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(faceMesh);
@@ -560,6 +587,7 @@
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
+						        this.isSelected = false;
 						        this.asGeom = function () {
 						            // remove the old plane
 						            //scene.remove(shape);
@@ -576,7 +604,9 @@
 						                    steps: crownControls.steps
 						            };
 						
-						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions));
+						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions), false);
+						            crownMesh.children[0].controler = crownControls;
+						            crownMesh.children[0].name = "crown";
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(crownMesh);
@@ -589,6 +619,7 @@
 						    strapControls = new function () {
 								this.bevelEnabled = false;
 						        this.steps = 200;
+						        this.isSelected = false;
 								var roundPath = [];
 								for (var i = 0; i < 180; i++) {
 									var pct = (i + 1) / 360;
@@ -613,8 +644,12 @@
 											extrudePath: strapControls.extrudePath
 						            };
 						
-						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
-						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions));
+						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), false);
+						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), false);
+						            strapMesh.children[0].controler = strapControls;
+						            strapMesh.children[0].name = "strap";
+						            strapMesh.children[0].controler = strapControls;
+						            strapMesh2.children[0].name = "strap2";
 						            // add it to the scene.
 									scene.add(strapMesh);
 									scene.add(strapMesh2);
@@ -672,6 +707,7 @@
 <!-- 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)"><img src="img/button-icon/favorite-icon-white.png"></button> -->
 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
 	      <button class="bottom-btn" name="bezel-bevelSize" onclick="changeMODE(this.name)">siz</button>
+	      <button class="bottom-btn" name="ok-button" onclick="allGood()">OK</button>
 	    </nav>
 						
 		<!-- Navigation Menu -->
