@@ -181,49 +181,56 @@
 						
 						function updateValueScale(v)
 						{
-							if (SELECTED.object.name == "bezel"){
-								switch(MODE)
-								{
-									case "bezel-amount":
-									bezelControls.amount = map(bezelControls.amount, 0,10, v);
-									updateBezel();
-									break;
-									case "bezel-bevelThickness":
-									bezelControls.bevelThickness = map(bezelControls.bevelThickness, 0,10, v);
-									updateBezel();
-									break;
-									case "bezel-bevelSize":
-									bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
-									updateBezel();
-									break;
-									default:
-									break;
-								}
-							} else {}
+							if (!isOk)
+							{
+								if (SELECTED.object.name == "bezel"){
+									switch(MODE)
+									{
+										case "bezel-amount":
+										bezelControls.amount = map(bezelControls.amount, 0,10, v);
+										updateBezel();
+										break;
+										case "bezel-bevelThickness":
+										bezelControls.bevelThickness = map(bezelControls.bevelThickness, 0,10, v);
+										updateBezel();
+										break;
+										case "bezel-bevelSize":
+										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
+										updateBezel();
+										break;
+										default:
+										break;
+									}
+								} else {}
+							}
 						}
 						
 						function updateValueDoubleTap()
 						{
-							if (SELECTED.object.name == "bezel"){
-								switch(MODE)
-								{
-									case "bezel-amount":
-									bezelControls.amount = 2;
-									updateBezel();
-									break;
-									case "bezel-bevelThickness":
-									bezelControls.bevelThickness = 2;
-									updateBezel();
-									break;
-									case "bezel-bevelSize":
-									bezelControls.bevelSize = 0.5;
-									updateBezel();
-									break;
-									default:
-									break;
+							if(!isOk)
+							{
+								if (SELECTED.object.name == "bezel"){
+									switch(MODE)
+									{
+										case "bezel-amount":
+										bezelControls.amount = 2;
+										updateBezel();
+										break;
+										case "bezel-bevelThickness":
+										bezelControls.bevelThickness = 2;
+										updateBezel();
+										break;
+										case "bezel-bevelSize":
+										bezelControls.bevelSize = 0.5;
+										updateBezel();
+										break;
+										default:
+										break;
+									}
+								} else {
 								}
-							} else {
 							}
+							//else{console.log("tap is ok");}
 						}
 						
 						function updateBezel(){
