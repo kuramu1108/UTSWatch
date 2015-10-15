@@ -621,7 +621,9 @@ window.Modernizr = (function( window, document, undefined ) {
  * for a while (without movement).
  */
 (function(exports) {
-  var LONGPRESS_TIME = 600;
+  //var LONGPRESS_TIME = 600;
+  // changed by Po-Hao
+  var LONGPRESS_TIME = 300;
   var WIGGLE_THRESHOLD = 5;
 
   /**

@@ -117,6 +117,29 @@
 							updateValueDoubleTap();
 						});
 						
+						thisOne.addEventListener("gesturelongpress", function(e){
+							mouse.x = ( e.target.longpressInitPosition.x / $("#WebGLcanvas").width() ) * 2 - 1;
+							mouse.y = - ( e.target.longpressInitPosition.y / $("#WebGLcanvas").height() ) * 2 + 1;
+							console.log(event.clientX);
+							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+							//projector.unproject( vector, camera );
+							vector.unproject(camera);
+							//raycaster.setFromCamera( mouse, camera );
+							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+							var intersects = raycaster.intersectObjects( meshCollection, true);
+							if ( intersects.length > 0 ) {
+								if (SELECTED){
+									SELECTED.object.material.color.setHex( 0x96b0be );
+									SELECTED.object.controler.isSelected = false;
+								}
+								intersects[ 0 ].object.material.color.setHex( 0xec5252 );
+								SELECTED = intersects[0];
+								SELECTED.object.controler.isSelected = true;
+								//isOk = false;
+							}
+
+						});
+						
 						function onWindowResize() {
 			
 			                camera.aspect = window.innerWidth / window.innerHeight;
@@ -145,6 +168,7 @@
 							{
 								mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
 								mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
+								console.log(event.clientX);
 								var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
 								//projector.unproject( vector, camera );
 								vector.unproject(camera);
@@ -475,8 +499,8 @@
 					        //container.appendChild(webGLRenderer.domElement);
 					        
 					        																					
-							webGLRenderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
-							webGLRenderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
+							//webGLRenderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+							//webGLRenderer.domElement.addEventListener( 'touchstart', onDocumentTouchStart, false );
 							
 							window.addEventListener( 'resize', onWindowResize, false );
 					        // call the render function
