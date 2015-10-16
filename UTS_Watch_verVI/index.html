@@ -69,7 +69,6 @@
 						var meshCollection = [];
 						var SELECTED = null;
 						var MODE = "bezel-amount";
-						var isOk = true;
 						var strapWidth = 15;
 						var bezel_radius = 35;
 						
@@ -120,7 +119,6 @@
 						thisOne.addEventListener("gesturelongpress", function(e){
 							mouse.x = ( e.target.longpressInitPosition.x / $("#WebGLcanvas").width() ) * 2 - 1;
 							mouse.y = - ( e.target.longpressInitPosition.y / $("#WebGLcanvas").height() ) * 2 + 1;
-							console.log(event.clientX);
 							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
 							//projector.unproject( vector, camera );
 							vector.unproject(camera);
@@ -135,7 +133,6 @@
 								intersects[ 0 ].object.material.color.setHex( 0xec5252 );
 								SELECTED = intersects[0];
 								SELECTED.object.controler.isSelected = true;
-								//isOk = false;
 							}
 
 						});
@@ -163,9 +160,7 @@
 						function onDocumentMouseDown( event ) {
 			
 							event.preventDefault();
-			
-							if (isOk)
-							{
+							
 								mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
 								mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
 								console.log(event.clientX);
@@ -183,9 +178,8 @@
 									intersects[ 0 ].object.material.color.setHex( 0xec5252 );
 									SELECTED = intersects[0];
 									SELECTED.object.controler.isSelected = true;
-									isOk = false;
 								}
-							}
+							
 						}
 						
 						
@@ -204,7 +198,7 @@
 						
 						function updateValueScale(v)
 						{
-							if (!isOk)
+							if (SELECTED)
 							{
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
@@ -230,7 +224,7 @@
 						
 						function updateValueDoubleTap()
 						{
-							if(!isOk)
+							if(SELECTED)
 							{
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
@@ -264,10 +258,6 @@
 							MODE = mode;
 						}
 						
-						function allGood()
-						{
-							isOk = true;
-						}
 						//render function		
 						function render() {	
 						    //shape.rotation.y = step += 0.02;
@@ -275,6 +265,11 @@
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
 							webGLRenderer.render(scene, camera);
+					    }
+					    
+					    function watchFaceMode()
+					    {
+						    camera.position.set(0, 0, 150);
 					    }
 					    
 					    function drawLug() {
@@ -741,7 +736,7 @@ var gui = new dat.GUI();
 <!-- 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)"><img src="img/button-icon/favorite-icon-white.png"></button> -->
 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
 	      <button class="bottom-btn" name="bezel-bevelSize" onclick="changeMODE(this.name)">siz</button>
-	      <button class="bottom-btn" name="ok-button" onclick="allGood()">OK</button>
+	      <button class="bottom-btn" name="ok-button" onclick="watchFaceMode()">Face</button>
 	    </nav>
 						
 		<!-- Navigation Menu -->
