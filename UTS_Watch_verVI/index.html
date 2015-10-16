@@ -216,7 +216,8 @@
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
 									{
-										case "bezel-amount":
+										/*
+case "bezel-amount":
 										bezelControls.amount = map(bezelControls.amount, 0,10, v);
 										updateBezel();
 										break;
@@ -228,6 +229,7 @@
 										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
 										updateBezel();
 										break;
+*/
 										case "side view":
 										bezelControls.amount = map(bezelControls.amount, 0,10, v);
 										updateBezel();
@@ -250,7 +252,8 @@
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
 									{
-										case "bezel-amount":
+										/*
+case "bezel-amount":
 										bezelControls.amount = 2;
 										updateBezel();
 										break;
@@ -262,6 +265,7 @@
 										bezelControls.bevelSize = 0.5;
 										updateBezel();
 										break;
+*/
 										case "side view":
 										bezelControls.amount = 2;
 										updateBezel();
@@ -278,6 +282,10 @@
 							}
 						}
 						
+						function updateLug(){
+							lugControls.asGeom();
+							repopulateArray();
+						}
 						function updateBezel(){
 							bezelControls.asGeom();
 							repopulateArray();
@@ -296,7 +304,7 @@ if (MODE == 'Face')
 								
 							}
 */
-							if (camera.position.z < 40 && camera.position.z > -40)
+							if (camera.position.z < 80 && camera.position.z > -80)
 							{
 								MODE = "side view";
 							}
@@ -594,7 +602,9 @@ if (MODE == 'Face')
 									bezelMesh.children[0].name = "bezel";
 						            // add it to the scene.									
 									scene.add(bezelMesh);
-									repopulateArray();
+									// add the new mesh to the mesh array
+									//repopulateArray();
+									// add the new mesh as selected
 									if (SELECTED && SELECTED.object.name == "bezel")
 									{
 										SELECTED.object = bezelMesh.children[0];
@@ -634,7 +644,14 @@ if (MODE == 'Face')
 						            lugMesh.children[0].name = "lug";
 						            // add it to the scene.
 									scene.add(lugMesh);
-						        };
+									// add the new mesh to the mesh array
+									repopulateArray();
+									// add the new mesh as selected
+									if (SELECTED && SELECTED.object.name == "lug")
+									{
+										SELECTED.object = lugMesh.children[0];
+									}						        
+								};
 						
 						    }
 							// control for watch face
@@ -795,10 +812,6 @@ var gui = new dat.GUI();
 				<!-- The Geometry End Here -->
 		<!---  Button ---->
 		<nav class="bottom-bar">
-	      <button class="bottom-btn" name="bezel-amount" onclick="changeMODE(this.name)">Amo</button>
-<!-- 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)"><img src="img/button-icon/favorite-icon-white.png"></button> -->
-	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
-	      <button class="bottom-btn" name="bezel-bevelSize" onclick="updateCameraRotation()">siz</button>
 	      <button class="bottom-btn" name="ok-button" onclick="watchFaceMode()">Face</button>
 	      <button class="bottom-btn" name="ok-button" onclick="watchModelMode()">Model</button>
 	    </nav>
