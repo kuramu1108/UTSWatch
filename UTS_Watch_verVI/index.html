@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0, maximum-scale=1.0"> 
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0"> 
 		<title>UTS Watch MiniFab ver. VI</title>
 		
 		<!-- Navigation CSS -->		
@@ -54,7 +54,7 @@
 					<!-- Div which will hold the Output -->
 					
 					<canvas id="WebGLcanvas"></canvas>
-					<div id="cameraAngle">test</div>
+					<div id="cameraAngle"></div>
 <!-- 					<div id="WebGL-output"></div>  -->
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
@@ -312,7 +312,7 @@ if (MODE == 'Face')
 							{
 								MODE = "front view";
 							}
-							updateCameraRotation();
+							//updateCameraRotation();
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
 							webGLRenderer.render(scene, camera);
