@@ -1,15 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>UTS Watch MiniFab Ver. VI</title>
-<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
-<script language="javascript" type="text/javascript" src="js/jquery-2.1.4.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+<title>UTS Watch MiniFab ver. VI</title>
+
 <!-- Link CSS -->
-<link rel="stylesheet" type="text/css" href="css/normalize.css"></link>
-<link rel="shortcut icon" href="../favicon.ico"></link>
 <link rel="stylesheet" type="text/css" href="css/default.css" />
 <link rel="stylesheet" type="text/css" href="css/component.css" />
-<link rel="stylesheet" type="text/css" href="css/documentation.css" />
+
 <script src="js/modernizr.custom.js"></script>
 
 <!-- Geometry Script -->
@@ -23,8 +24,7 @@
 <script type="text/javascript" src="js/FileSaver.js"></script>
 <script src="http://connect.facebook.net/en_US/all.js"></script>
 <script type="text/javascript" src="js/pointer.js"></script> 
-<style>
-
+<style type="text/css">
 body, html { font-size: 100%; padding: 0; margin: 0; height: 100%;}
 
 body {
@@ -45,22 +45,23 @@ body {
 	right: 0;
 	margin: auto;
 }
-/* assign as <ul> class a to avoid applying on all <ul>*/
+/* assign as <ul> class .a to avoid applying on all <ul>*/
 div > ul.a {
 	list-style: none; 
-	padding: 0; /* 메뉴의 첫 빈공간*/
+	padding: 0; /* Empty place of first menu */
 	margin: 0;
 }
 
 ul.a li {
 	top: 0;
     left: 0;
-	padding: 0.15em; /* 버튼의 크기*/
+	padding: 0.15em; /* Size of the button*/
 	position: relative;
-	float: left;
+	float: centre;
 	background: none;
 	list-style: none;
 	text-decoration: none;
+	
 }
 
 li ul {
@@ -89,16 +90,29 @@ ul:after {
 	clear: both;
 }
 
+/* Bottom Button <Div> */
+.menuwrapper {
+    width:600px;
+	max-width: 100%;
+	/*Position of the menu holder. 10.08.15 Chris*/
+	position: absolute;
+	float: center;
+	bottom: 0%;
+	left: 50%;
+	/* border: 1px solid #8AC007; */
+    z-index:15;
+    margin:-100px 0 0 -180px;
+}
 
 /* Common button styles */
 .button {
-	float: left;
+	float: center;
 	min-width: 150px;
 	max-width: 250px;
 	display: block;
 	margin: 1em;
 	padding: 1em 2em;
-	border: none;
+	border: 2px;
 	background: ffffff;
 	color: inherit;
 	vertical-align: middle;
@@ -114,18 +128,6 @@ ul:after {
 	vertical-align: middle;
 }
 
-
-/* Sizes */
-.button--size-s {
-	font-size: 14px;
-}
-.button--size-m {
-	font-size: 16px;
-}
-.button--size-l {
-	font-size: 18px;
-}
-
 /* Typography and Roundedness */
 
 .button--text-thick {
@@ -138,8 +140,8 @@ ul:after {
 
 /* Sacnite */
 .button.button--sacnite {
-	width: 70px;
-	height: 70px;
+	width: 40px;
+	height: 40px;
 	min-width: 0;
 	padding: 0;
 	color: #fff;
@@ -148,6 +150,7 @@ ul:after {
 }
 .button--scanite.button--round-l {
 	border-radius: 50%;
+	color: #fff;
 }
 
 .button--sacnite::before {
@@ -157,6 +160,7 @@ ul:after {
 	left: 0;
 	width: 100%;
 	height: 100%;
+	border: 1px solid #ffffff;
 	border-radius: inherit;
 	z-index: -1;
 	box-shadow: inset 0 0 0 35px #000000;
@@ -164,11 +168,6 @@ ul:after {
 	transform: scale3d(0.9, 0.9, 1);
 	-webkit-transition: box-shadow 0.3s, -webkit-transform 0.3;
 	transition: box-shadow 0.3s, transform 0.3s;
-}
-
-.button--sacnite .button__icon {
-	font-size: 22px;
-	width: 22px;
 }
 .button--sacnite > span {
 	position: absolute;
@@ -185,19 +184,13 @@ ul:after {
 	transform: scale3d(1, 1, 1);
 }
 
-.menuwrapper {
-	width: 100%;
-	max-width: 100%;
-	/*Position of the menu holder. 10.08.15 Chris*/
-	position: fixed;
-	bottom: 1%;
-}
-
+/* FB like button container */
 .fb-container {
 	position: relative;
 	background: none;
-	top: 0%;
+	top: 8%;
 	left: 0%;
+	/* border: 1px solid #8AC007; */
 }
 
 </style>
@@ -907,16 +900,11 @@ mixpanel.init("7850985362ff8cee034ed112ee70d62b");</script><!-- end Mixpanel -->
 			<!--  2nd Child -->
 			<li><a id="fb_name" href="index.html">UTS Watch</a></li>
 			<!--  3rd Child -->
-			<li>	
-				<!-- like button code 15.10.15 Chris -->
-				<div class="fb-container"><!-- Start of FB button Contatiner -->
-			 		<div class="fb-like" data-href="http://php-hexacorn.ose-pilot.uts.edu.au/UTS_Watch_verVI/index.html" data-width="300" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-				</div> <!-- End of FB button container -->
-			</li>
+			<li></li>
 			<!--  4th Child -->
 			<li><a class="" href="javascript:save();">Export</a></li>
-			<!--  5th Child -->
-			<li><a class="" href="">Order</a></li>	
+			<!--  5th Child 
+			<li><a class="" href="">Order</a></li>	-->
 		</ul>
 	</div><!-- Navigation Menu container end -->
 	
@@ -926,5 +914,10 @@ mixpanel.init("7850985362ff8cee034ed112ee70d62b");</script><!-- end Mixpanel -->
 	<script>
 		new gnMenu(document.getElementById('gn-menu'));
 	</script>
+	
+	<!-- like button code 15.10.15 Chris -->
+	<div class="fb-container"><!-- Start of FB button Contatiner -->
+		<div class="fb-like" data-href="http://php-hexacorn.ose-pilot.uts.edu.au/UTS_Watch_verVI/index.html" data-width="300" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+	</div> <!-- End of FB button container -->
 </body>
 </html>
