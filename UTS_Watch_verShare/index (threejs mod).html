@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0"> 
+		<title>UTS Watch MiniFab ver. V</title>
+		
+		<!-- Navigation CSS -->		
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+	    <link href="css/documentation.css" rel="stylesheet" />
+
+		<!-- Navigation Menu Script -->
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+
+				// Define any icon actions before calling the toolbar
+				$('.toolbar-icons a').on('click', function( event ) {
+					event.preventDefault();
+				});
+
+				$('#normal-button').toolbar({content: '#user-options', position: 'top'});
+				$('#normal-button-bottom').toolbar({content: '#user-options', position: 'bottom'});
+				$('#normal-button-small').toolbar({content: '#user-options-small', position: 'top', hideOnClick: true});
+				$('#button-left').toolbar({content: '#user-options', position: 'left'});
+				$('#button-right').toolbar({content: '#user-options', position: 'right'});
+				$('#link-toolbar').toolbar({content: '#user-options', position: 'top'});
+
+			});
+		</script>
+				
+		<!-- Geometry Script -->
+		<!-- <script type="text/javascript" src="js/three.js"></script> -->
+		<script type="text/javascript" src="js/Geometry/three_mod2.js"></script>
+		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
+   		<script type="text/javascript" src="js/Geometry/stats.js"></script>
+   		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
+   		<script type="text/javascript" src="js/OrbitControls.js"></script>
+   		<script type="text/javascript" src="js/pointer.js"></script>
+
+   		<style>
+	   		#WebGLcanvas {
+			    overflow: hidden;
+			    -ms-touch-action: none;
+			}
+		</style>	
+	</head>
+	<body>
+			<!-------------- 3D Geometry Start Here ------------------->
+					<canvas id="WebGLcanvas" width="1038" height="400" style="width: 1038px; height: 400px;"></canvas>	
+					<!-- Div which will hold the Output -->
+					<div id="WebGL-output" align="center"	>
+						<!-- Javascript code that runs our Three.js examples -->
+						<script type="text/javascript">
+						// initial variables
+						var scene, camera, webGLRenderer, shape, initialShape, initialLug, step, controls, controlLug;
+						var mainShape, lugShape;
+						var ultimateStuff;
+						var strapWidth = 15;
+						
+						// helping function
+						
+						function map(current, min,max,v)
+						{
+							if (v >= 1)
+							{
+								var temp = current + v * 0.2;
+								if (temp >= max)
+									temp = max;
+							}
+							else
+							{
+								var temp = current - 1 * v;
+								if (temp <= min)
+									temp = min;
+							}
+							return temp;
+						}
+						
+						var thisOne = document.getElementById( "WebGLcanvas" );
+						thisOne.addEventListener('gesturescale', function(e)
+						{
+							strapWidth = map(strapWidth,15,18,e.scale);
+							updateStrapWidth();
+						});
+						
+						thisOne.addEventListener("gesturedoubletap", function() {
+							strapWidth = 18;
+							updateStrapWidth();
+						});
+
+						//start rendering
+						init();
+						
+						//update function
+						function updateStrapWidth(){
+							shapeCreation();
+							controls.asGeom();
+							controlLug.asGeom();
+						}
+									
+						function render() {	
+						    //shape.rotation.y = step += 0.02;
+							
+							// render using requestAnimationFrame
+							requestAnimationFrame(render);
+							webGLRenderer.render(scene, camera);
+					    }
+					    
+					    function drawLug() {
+							var lugs = [];
+				            // create a basic shape of lugs
+				            var trlug = new THREE.Shape();
+							//var strapWidth = 15;
+							var form = 2;
+							var ox = strapWidth;
+							var oy = 46 - form * (strapWidth - 14);
+							var limit = 25;
+							trlug.moveTo(ox, oy);
+							trlug.lineTo(limit, 46 - form * (limit - 14));
+							trlug.lineTo(ox, (46 - form *(limit-14)));
+							trlug.lineTo(ox, oy);
+							
+							var bllug = new THREE.Shape();
+							bllug.moveTo(-ox, -oy);
+							bllug.lineTo(-limit, -46 + form * (limit - 14));
+							bllug.lineTo(-ox, -46 + form * (limit - 14));
+							bllug.lineTo(-ox, -oy);
+							
+							var brlug = new THREE.Shape();
+							brlug.moveTo(ox, -oy);
+							brlug.lineTo(limit, -46 + form * (limit - 14));
+							brlug.lineTo(ox, -46 + form * (limit - 14));
+							brlug.lineTo(ox, -oy);
+		
+							var tllug = new THREE.Shape();
+							tllug.moveTo(-ox, oy);
+							tllug.lineTo(-limit, 46 - form * (limit - 14));
+							tllug.lineTo(-ox, 46 - form * (limit - 14));
+							tllug.lineTo(-ox, oy);
+						// return the shape
+							lugs.push(trlug);
+							lugs.push(bllug);
+							lugs.push(brlug);
+							lugs.push(tllug);
+				            return lugs;
+				        }
+			
+						function drawShape() {
+						
+							this.bevelOffset = 0.5;
+							this.innerRing = 26;
+			
+				            // create a basic shape
+				            var circle = new THREE.Shape();
+							//var radius = 35;
+							var radius = 35 - drawShape.bevelOffset;
+							
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = radius * Math.cos(theta);
+								var y = radius * Math.sin(theta);
+								if (i == 0) 
+								{
+									circle.moveTo(x, y);
+								} else {
+									circle.lineTo(x, y);
+								}
+							}
+							
+							var hole = new THREE.Path();
+							//var iRadius = 26;
+							var iRadius = 0 + drawShape.bevelOffset + drawShape.innerRing;
+							for (var i = 0; i < 360; i++) {
+								var pct = (i + 1) / 360;
+								var theta = pct * Math.PI * 2.0;
+								var x = iRadius * Math.cos(theta);
+								var y = iRadius * Math.sin(theta);
+								if (i == 0) 
+								{
+									hole.moveTo(x, y);
+								} else {
+									hole.lineTo(x, y);
+								}
+							}
+							circle.holes.push(hole);
+				            // return the shape
+				            return circle;
+				        }
+				        
+				        function createMesh(geom) {
+						
+						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
+						
+						     // assign two materials
+						     var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+						
+						     //  meshMaterial.side = THREE.DoubleSide;
+						     var wireFrameMat = new THREE.MeshBasicMaterial();
+						     wireFrameMat.wireframe = true;
+						
+						     // create a multimaterial
+						     var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+						     //var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
+						
+						     return mesh;
+						}
+						
+						function shapeCreation(){
+							initialShape = drawShape();
+						    //shapeOne = createMesh(new THREE.ShapeGeometry(initialShape));
+						    // add the sphere to the scene
+							//scene.add(shapeOne);
+						        
+						    initialLug = drawLug();
+							//lug = createMesh(new THREE.ShapeGeometry(initialLug));
+						    // add the sphere to the scene
+					        //scene.add(lug);
+					        ultimateStuff = initialLug;
+					        ultimateStuff.push(initialShape);				
+						}
+			
+
+
+						    // once everything is loaded, we run our Three.js stuff.
+						function init() {
+							
+							var container = document.getElementById( "WebGLcanvas" );					
+							// create a scene, that will hold all our elements such as objects, cameras and lights.
+						    scene = new THREE.Scene();
+				
+							// create a camera, which defines where we're looking at.
+						    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+							
+							// create a render and set the size
+						    webGLRenderer = new THREE.WebGLRenderer({canvas: container});
+							webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
+						    webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+						    webGLRenderer.shadowMapEnabled = true;
+						
+							shapeCreation();
+							var controler = new THREE.OrbitControls(camera, webGLRenderer.domElement);
+							controler.noZoom = true;
+					        // position and point the camera to the center of the scene
+					        camera.position.x = 0;
+					        camera.position.y = 0;
+					        camera.position.z = 200;
+					        camera.lookAt(new THREE.Vector3(0, 0, 0));
+							
+							//scene.add( new THREE.AmbientLight( 0xffffff ) );
+	
+							var light1 = new THREE.PointLight( 0xffffff, 0.3 );
+							light1.position.set(0, 0, 150);
+							scene.add( light1 );
+							
+							var light2 = new THREE.PointLight( 0xffffff, 0.3 );
+							light2.position.set(-50, 50, 50);
+							scene.add( light2 );
+							
+							var light3 = new THREE.PointLight( 0xffffff, 0.3 );
+							light3.position.set(50, 50, 50);
+							scene.add( light3 );
+							
+							var light4 = new THREE.PointLight( 0xffffff, 0.3 );
+							light4.position.set(50, 50, -50);
+							scene.add( light4 );
+							
+							var light5 = new THREE.PointLight( 0xffffff, 0.3 );
+							light5.position.set(-50, 50, -50);
+							scene.add( light5 );
+					        // add the output of the renderer to the html element
+					        //container.appendChild(webGLRenderer.domElement);
+						
+					        // call the render function
+					        step = 0;
+						
+					        // setup the control gui
+					        controls = new function () {
+						        this.amount = 2;
+						        this.bevelThickness = 2;
+								this.bevelSize = 0.5;
+						        this.bevelSegments = 10;
+								this.bevelEnabled = true;
+						        this.curveSegments = 12;
+						        this.steps = 1;
+								this.curveA = 10;
+								this.curveB = 15;
+								this.innerRing = 26;
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(mainShape);
+									
+									//offset the size of the circle radius by how big the bevel is
+									drawShape.bevelOffset = controls.bevelSize;
+									drawShape.innerRing = controls.innerRing;
+
+					                var options = {
+						                    amount: controls.amount,
+						                    bevelThickness: controls.bevelThickness,
+						                    bevelSize: controls.bevelSize,
+											innerRing: controls.innerRing,
+						                    bevelSegments: controls.bevelSegments,
+						                    bevelEnabled: controls.bevelEnabled,
+						                    curveSegments: controls.curveSegments,
+						                    steps: controls.steps,
+											curveA: controls.curveA,
+											curveB: controls.curveB
+						            };
+						
+									// create a new one
+									
+						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            mainShape = createMesh(new THREE.ExtrudeGeometry(drawShape(), options));
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(mainShape);
+						        };
+						
+						    }
+						    
+						    controlLug = new function () {
+						        this.amount = 2;
+						        this.bevelThickness = 1;
+								this.bevelSize = 0.5;
+						        this.bevelSegments = 3;
+								this.bevelEnabled = true;
+						        this.curveSegments = 12;
+						        this.steps = 1;
+								this.curveA = 10;
+								this.curveB = 15;
+						        this.asGeom = function () {
+						            // remove the old plane
+						            //scene.remove(shape);
+						            scene.remove(lugShape);
+									// create a new one
+
+					                var options = {
+						                    amount: controlLug.amount,
+						                    bevelThickness: controlLug.bevelThickness,
+						                    bevelSize: controlLug.bevelSize,
+						                    bevelSegments: controlLug.bevelSegments,
+						                    bevelEnabled: controlLug.bevelEnabled,
+						                    curveSegments: controlLug.curveSegments,
+						                    steps: controlLug.steps,
+											curveA: controlLug.curveA,
+											curveB: controlLug.curveB
+						            };
+						
+						            //shape = createMesh(new THREE.ExtrudeGeometry(ultimateStuff, options));
+						            lugShape = createMesh(new THREE.ExtrudeGeometry(initialLug, options));
+						            // add it to the scene.
+									//scene.add(shape);
+									scene.add(lugShape);
+						        };
+						
+						    }
+						        
+								// Chris : Here applied CSS to change location of dropdown menu
+								// CSS at component.css line 332
+						        var gui = new dat.GUI();
+								gui.domElement.id = 'gui';
+						        gui.add(controls, 'amount', 0, 20).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelThickness', 0, 10).onChange(controls.asGeom);
+						        gui.add(controls, 'bevelSize', 0, 10).onChange(controls.asGeom);
+								gui.add(controls, 'innerRing', 10, 30).onChange(controls.asGeom);
+								
+								//The following controls were hidden because they are not used client-side.
+						        //gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.asGeom);
+						        //gui.add(controls, 'bevelEnabled').onChange(controls.asGeom);
+						        //gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.asGeom);
+						        //gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.asGeom);
+								//gui.add(controls, 'curveA', -50, 50).onChange(controls.asGeom);
+								//gui.add(controls, 'curveB', -50, 50).onChange(controls.asGeom);
+						        controls.asGeom();
+						        controlLug.asGeom();
+						        //changes the values, removes the old plane, draws a new shape to the screen
+						        //shape.rotation.y = 150;
+						        render();
+						
+					    }
+						</script>
+				</div> <!-- The Geometry End Here -->
+						
+		<!-- Navigation Menu -->
+		<div class="container">
+			<ul id="gn-menu" class="gn-menu-main">
+				<li class="gn-trigger">
+					<a class="gn-icon gn-icon-menu"><span>Menu</span></a>
+					<nav class="gn-menu-wrapper">
+						<div class="gn-scroller">
+							<ul class="gn-menu">
+								<li class="">
+									<input placeholder="Search" type="search" class="gn-search">
+									<a class="gn-icon gn-icon-search"><span>Search</span></a>
+								</li>
+								<li>
+									<a class="gn-icon gn-icon-download">Edit</a>
+									<ul class="gn-submenu">
+										<li><a class="gn-icon gn-icon-illustrator">Account</a></li>
+										<li><a class="gn-icon gn-icon-article">Sample Design</a></li>
+									</ul>
+								</li>
+								<li><a class="gn-icon gn-icon-cog">Settings</a></li>
+								<li><a class="gn-icon gn-icon-help">Help</a></li>
+							</ul>
+						</div><!-- /gn-scroller -->
+					</nav>
+				</li>
+				<li><a href="index.html">UTS Watch</a></li>
+				<li><a class="" href="">Log In</a></li>
+			</ul>
+		</div><!-- menu container end -->
+		
+		<!-- Script for Navigation Menu -->
+		<script src="js/classie.js"></script>
+		<script src="js/gnmenu.js"></script>
+		<script>
+			new gnMenu( document.getElementById( 'gn-menu' ) );
+		</script>
+	</body>
+</html>
