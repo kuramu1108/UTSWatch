@@ -35,6 +35,16 @@
 			    right: 0;
 			    margin:auto;
 			}
+			
+			#cameraAngle{
+				position: absolute;
+				top: 55px; width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+			}
 		</style>	
 	</head>
 	
@@ -42,7 +52,9 @@
 			<!-------------- 3D Geometry Start Here ------------------->
 						
 					<!-- Div which will hold the Output -->
+					
 					<canvas id="WebGLcanvas"></canvas>
+					<div id="cameraAngle">test</div>
 <!-- 					<div id="WebGL-output"></div>  -->
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
@@ -268,9 +280,25 @@ if (MODE == 'Face')
 								
 							}
 */
+							if (camera.position.z < 40 && camera.position.z > -40)
+							{
+								MODE = "side view";
+							}
+							else
+							{
+								MODE = "front view";
+							}
+							updateCameraRotation();
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
 							webGLRenderer.render(scene, camera);
+					    }
+					    
+					    function updateCameraRotation()
+					    {
+						    var str = "X: " + camera.rotation.x.toString() + "<br>" + "Y: " + camera.rotation.y.toString() + "<br>" + "Z: " + camera.rotation.z.toString() + "<br>" + "X: " + camera.position.x.toString() + "<br>" + "Y: " + camera.position.y.toString() + "<br>" + "Z: " + camera.position.z.toString() + "<br>" + MODE;
+						    document.getElementById("cameraAngle").innerHTML = str;
+						    //console.log(camera.rotation.x);
 					    }
 					    
 					    function watchFaceMode()
@@ -755,7 +783,7 @@ var gui = new dat.GUI();
 	      <button class="bottom-btn" name="bezel-amount" onclick="changeMODE(this.name)">Amo</button>
 <!-- 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)"><img src="img/button-icon/favorite-icon-white.png"></button> -->
 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
-	      <button class="bottom-btn" name="bezel-bevelSize" onclick="changeMODE(this.name)">siz</button>
+	      <button class="bottom-btn" name="bezel-bevelSize" onclick="updateCameraRotation()">siz</button>
 	      <button class="bottom-btn" name="ok-button" onclick="watchFaceMode()">Face</button>
 	      <button class="bottom-btn" name="ok-button" onclick="watchModelMode()">Model</button>
 	    </nav>
