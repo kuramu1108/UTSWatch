@@ -47,7 +47,7 @@
 						<!-- Javascript code that runs our Three.js examples -->
 						<script type="text/javascript">
 						// variable for setting up the scene three.js and WebGL
-						var scene, camera, webGLRenderer, step;
+						var scene, camera, webGLRenderer, step, cameraControl;
 						var exportFile;
 						// variable for shape holder
 						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
@@ -69,7 +69,8 @@
 						var meshCollection = [];
 						var SELECTED = null;
 						var MODE = "bezel-amount";
-						var strapWidth = 15;
+						var lugSpacing = 15;
+						var lugHeight = 3;
 						var bezel_radius = 35;
 						
 						// helping function
@@ -261,7 +262,12 @@
 						//render function		
 						function render() {	
 						    //shape.rotation.y = step += 0.02;
-							
+							/*
+if (MODE == 'Face')
+							{
+								
+							}
+*/
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
 							webGLRenderer.render(scene, camera);
@@ -270,44 +276,58 @@
 					    function watchFaceMode()
 					    {
 						    camera.position.set(0, 0, 150);
+						    camera.lookAt(new THREE.Vector3(0, 0, 0));
+						    cameraControl.enabled = false;
 					    }
 					    
+					    function watchModelMode()
+					    {
+						    camera.position.set(0, 0, 200);
+						    camera.lookAt(new THREE.Vector3(0, 0, 0));
+						    cameraControl.enabled = true;
+					    }
 					    function drawLug() {
 							var lugs = [];
-				            // create a basic shape of lugs
-				            var trlug = new THREE.Shape();
-							//var strapWidth = 15;
 							var form = 2;
-							var ox = strapWidth;
-							var oy = 46 - form * (strapWidth - 14);
 							var limit = 25;
-							trlug.moveTo(ox, oy);
-							trlug.lineTo(limit, 46 - form * (limit - 14));
-							trlug.lineTo(ox, (46 - form *(limit-14)));
-							trlug.lineTo(ox, oy);
+							var anchor1 = [lugSpacing, 46 - form * (limit - 14)];
+							var anchor2 = [lugSpacing, bezel_radius + lugHeight];
+							var anchor3 = [(46 - bezel_radius - lugHeight)/2 + 14, bezel_radius + lugHeight];
+							var anchor4 = [limit, 46 - form * (limit - 14)];
 							
-							var bllug = new THREE.Shape();
-							bllug.moveTo(-ox, -oy);
-							bllug.lineTo(-limit, -46 + form * (limit - 14));
-							bllug.lineTo(-ox, -46 + form * (limit - 14));
-							bllug.lineTo(-ox, -oy);
+							var top_right_lug = new THREE.Shape();
+							top_right_lug.moveTo(anchor1[0], anchor1[1]);
+							top_right_lug.lineTo(anchor2[0], anchor2[1]);
+							top_right_lug.lineTo(anchor3[0], anchor3[1]);
+							top_right_lug.lineTo(anchor4[0], anchor4[1]);
+							top_right_lug.lineTo(anchor1[0], anchor1[1]);
 							
-							var brlug = new THREE.Shape();
-							brlug.moveTo(ox, -oy);
-							brlug.lineTo(limit, -46 + form * (limit - 14));
-							brlug.lineTo(ox, -46 + form * (limit - 14));
-							brlug.lineTo(ox, -oy);
-		
-							var tllug = new THREE.Shape();
-							tllug.moveTo(-ox, oy);
-							tllug.lineTo(-limit, 46 - form * (limit - 14));
-							tllug.lineTo(-ox, 46 - form * (limit - 14));
-							tllug.lineTo(-ox, oy);
-						// return the shape
-							lugs.push(trlug);
-							lugs.push(bllug);
-							lugs.push(brlug);
-							lugs.push(tllug);
+							var bottom_left_lug = new THREE.Shape();
+							bottom_left_lug.moveTo(-anchor1[0], -anchor1[1]);
+							bottom_left_lug.lineTo(-anchor2[0], -anchor2[1]);
+							bottom_left_lug.lineTo(-anchor3[0], -anchor3[1]);
+							bottom_left_lug.lineTo(-anchor4[0], -anchor4[1]);
+							bottom_left_lug.lineTo(-anchor1[0], -anchor1[1]);
+							
+							var bottom_right_lug = new THREE.Shape();
+							bottom_right_lug.moveTo(anchor1[0], -anchor1[1]);
+							bottom_right_lug.lineTo(anchor2[0], -anchor2[1]);
+							bottom_right_lug.lineTo(anchor3[0], -anchor3[1]);
+							bottom_right_lug.lineTo(anchor4[0], -anchor4[1]);
+							bottom_right_lug.lineTo(anchor1[0], -anchor1[1]);
+							
+							var top_left_lug = new THREE.Shape();
+							top_left_lug.moveTo(-anchor1[0], anchor1[1]);
+							top_left_lug.lineTo(-anchor2[0], anchor2[1]);
+							top_left_lug.lineTo(-anchor3[0], anchor3[1]);
+							top_left_lug.lineTo(-anchor4[0], anchor4[1]);
+							top_left_lug.lineTo(-anchor1[0], anchor1[1]);
+							
+							// return the shape
+							lugs.push(top_right_lug);
+							lugs.push(bottom_left_lug);
+							lugs.push(bottom_right_lug);
+							lugs.push(top_left_lug);
 				            return lugs;
 				        }
 			
@@ -394,11 +414,11 @@
 				        function drawStrap(){
 							// create a basic shape
 				            var rect = new THREE.Shape();
-							rect.moveTo(strapWidth, 1);
-							rect.lineTo(strapWidth, -1);
-							rect.lineTo(-strapWidth, -1);
-							rect.lineTo(-strapWidth, 1);
-							rect.lineTo(strapWidth, 1);
+							rect.moveTo(lugSpacing, 1);
+							rect.lineTo(lugSpacing, -1);
+							rect.lineTo(-lugSpacing, -1);
+							rect.lineTo(-lugSpacing, 1);
+							rect.lineTo(lugSpacing, 1);
 							return rect;
 				        }
 
@@ -457,7 +477,7 @@
 						    webGLRenderer.shadowMapEnabled = true;
 						
 							shapeCreation();
-							var cameraControl = new THREE.OrbitControls(camera, webGLRenderer.domElement);
+							cameraControl = new THREE.OrbitControls(camera, webGLRenderer.domElement);
 							cameraControl.noZoom = true;
 					        // position and point the camera to the center of the scene
 					        camera.position.x = 0;
@@ -737,6 +757,7 @@ var gui = new dat.GUI();
 	      <button class="bottom-btn" name="bezel-bevelThickness" onclick="changeMODE(this.name)">thi</button>
 	      <button class="bottom-btn" name="bezel-bevelSize" onclick="changeMODE(this.name)">siz</button>
 	      <button class="bottom-btn" name="ok-button" onclick="watchFaceMode()">Face</button>
+	      <button class="bottom-btn" name="ok-button" onclick="watchModelMode()">Model</button>
 	    </nav>
 						
 		<!-- Navigation Menu -->
