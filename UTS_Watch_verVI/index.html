@@ -228,6 +228,14 @@
 										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
 										updateBezel();
 										break;
+										case "side view":
+										bezelControls.amount = map(bezelControls.amount, 0,10, v);
+										updateBezel();
+										break;
+										case "front view":
+										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
+										updateBezel();
+										break;
 										default:
 										break;
 									}
@@ -251,6 +259,14 @@
 										updateBezel();
 										break;
 										case "bezel-bevelSize":
+										bezelControls.bevelSize = 0.5;
+										updateBezel();
+										break;
+										case "side view":
+										bezelControls.amount = 2;
+										updateBezel();
+										break;
+										case "front view":
 										bezelControls.bevelSize = 0.5;
 										updateBezel();
 										break;
@@ -298,7 +314,6 @@ if (MODE == 'Face')
 					    {
 						    var str = "X: " + camera.rotation.x.toString() + "<br>" + "Y: " + camera.rotation.y.toString() + "<br>" + "Z: " + camera.rotation.z.toString() + "<br>" + "X: " + camera.position.x.toString() + "<br>" + "Y: " + camera.position.y.toString() + "<br>" + "Z: " + camera.position.z.toString() + "<br>" + MODE;
 						    document.getElementById("cameraAngle").innerHTML = str;
-						    //console.log(camera.rotation.x);
 					    }
 					    
 					    function watchFaceMode()
