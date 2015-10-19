@@ -341,7 +341,8 @@ if (MODE == 'Face')
 							var lugs = [];
 							var form = 2;
 							var limit = 25;
-							var anchor1 = [lugSpacing, 46 - form * (limit - 14)];
+							//var anchor1 = [lugSpacing, 46 - form * (limit - 14)];
+							var anchor1 = [lugSpacing, Math.sqrt(bezel_radius * bezel_radius - lugSpacing * lugSpacing)];
 							var anchor2 = [lugSpacing, bezel_radius + lugHeight];
 							var anchor3 = [(46 - bezel_radius - lugHeight)/2 + 14, bezel_radius + lugHeight];
 							var anchor4 = [limit, 46 - form * (limit - 14)];
@@ -402,7 +403,7 @@ if (MODE == 'Face')
 							}
 							
 							var hole = new THREE.Path();
-							var iRadius = 26;
+							var iRadius = 30;
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
 								var theta = pct * Math.PI * 2.0;
