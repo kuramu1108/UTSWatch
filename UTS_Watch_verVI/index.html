@@ -37,7 +37,7 @@
 			
 			#cameraAngle{
 				position: absolute;
-				top: 55px; width: 100%;
+				top: 55px;
 				color: #ffffff;
 				padding: 5px;
 				font-family:Monospace;
@@ -96,7 +96,7 @@
 							}
 							else
 							{
-								var temp = current - 1 * v;
+								var temp = current - .2 * v;
 								if (temp <= min)
 									temp = min;
 							}
@@ -160,7 +160,8 @@
 			
 			            }
 						
-						function onDocumentTouchStart( event ) {
+						/*
+function onDocumentTouchStart( event ) {
 				
 							event.preventDefault();
 							
@@ -194,6 +195,7 @@
 								}
 							
 						}
+*/
 						
 						
 						//start rendering
@@ -216,20 +218,6 @@
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
 									{
-										/*
-case "bezel-amount":
-										bezelControls.amount = map(bezelControls.amount, 0,10, v);
-										updateBezel();
-										break;
-										case "bezel-bevelThickness":
-										bezelControls.bevelThickness = map(bezelControls.bevelThickness, 0,10, v);
-										updateBezel();
-										break;
-										case "bezel-bevelSize":
-										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
-										updateBezel();
-										break;
-*/
 										case "side view":
 										bezelControls.amount = map(bezelControls.amount, 0,10, v);
 										updateBezel();
@@ -241,7 +229,24 @@ case "bezel-amount":
 										default:
 										break;
 									}
-								} else {}
+								} else if (SELECTED.object.name == "lug"){
+									switch(MODE)
+									{
+										case "side view":
+										lugControls.amount = map(lugControls.amount, 0, 5, v);
+										updateLug();
+										break;
+										case "front view":
+										lugSpacing = map(lugSpacing, 11,17,v);
+										initialLug = drawLug();
+										initialStrap = drawStrap();
+										updateLug();
+										updateStrap();
+										break;
+										default:
+										break;
+									}
+								}
 							}
 						}
 						
@@ -252,20 +257,6 @@ case "bezel-amount":
 								if (SELECTED.object.name == "bezel"){
 									switch(MODE)
 									{
-										/*
-case "bezel-amount":
-										bezelControls.amount = 2;
-										updateBezel();
-										break;
-										case "bezel-bevelThickness":
-										bezelControls.bevelThickness = 2;
-										updateBezel();
-										break;
-										case "bezel-bevelSize":
-										bezelControls.bevelSize = 0.5;
-										updateBezel();
-										break;
-*/
 										case "side view":
 										bezelControls.amount = 2;
 										updateBezel();
@@ -277,8 +268,25 @@ case "bezel-amount":
 										default:
 										break;
 									}
-								} else {
+								} else if (SELECTED.object.name == "lug"){
+									switch(MODE)
+									{
+										case "side view":
+										lugControls.amount = 2;
+										updateLug();
+										break;
+										case "front view":
+										lugSpacing = 15;
+										initialLug = drawLug();
+										initialStrap = drawStrap();
+										updateLug();
+										updateStrap();
+										break;
+										default:
+										break;
+									}
 								}
+
 							}
 						}
 						
@@ -288,6 +296,10 @@ case "bezel-amount":
 						}
 						function updateBezel(){
 							bezelControls.asGeom();
+							repopulateArray();
+						}
+						function updateStrap(){
+							strapControls.asGeom();
 							repopulateArray();
 						}
 						
