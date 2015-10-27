@@ -84,6 +84,14 @@
 						var lugSpacing = 15;
 						var lugHeight = 3;
 						var bezel_radius = 35;
+						var iRadius = 30;//inner radius
+						
+						// variable for component indicator
+						var indicatorShape; 
+						var indicatorMesh = new THREE.Mesh();
+						var indicatorMesh2 = new THREE.Mesh();
+						var indicatorControls;
+						var indicatorMaterial = new THREE.MeshPhongMaterial( { color: 0xFFD700, specular:0x847c7c, shininess: 0, combine: THREE.MultiplyOperation} );
 						
 						// helping function
 						function map(current, min,max,v)
@@ -160,43 +168,7 @@
 			
 			            }
 						
-						/*
-function onDocumentTouchStart( event ) {
-				
-							event.preventDefault();
-							
-							event.clientX = event.touches[0].clientX;
-							event.clientY = event.touches[0].clientY;
-							onDocumentMouseDown( event );
-			
-						}	
-						
-						function onDocumentMouseDown( event ) {
-			
-							event.preventDefault();
-							
-								mouse.x = ( event.clientX / $("#WebGLcanvas").width() ) * 2 - 1;
-								mouse.y = - ( event.clientY / $("#WebGLcanvas").height() ) * 2 + 1;
-								console.log(event.clientX);
-								var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
-								//projector.unproject( vector, camera );
-								vector.unproject(camera);
-								//raycaster.setFromCamera( mouse, camera );
-								raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-								var intersects = raycaster.intersectObjects( meshCollection, true);
-								if ( intersects.length > 0 ) {
-									if (SELECTED){
-										SELECTED.object.material.color.setHex( 0x96b0be );
-										SELECTED.object.controler.isSelected = false;
-									}
-									intersects[ 0 ].object.material.color.setHex( 0xec5252 );
-									SELECTED = intersects[0];
-									SELECTED.object.controler.isSelected = true;
-								}
-							
-						}
-*/
-						
+												
 						
 						//start rendering
 						init();
@@ -324,6 +296,7 @@ if (MODE == 'Face')
 							{
 								MODE = "front view";
 							}
+							showIndicator();
 							//updateCameraRotation();
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
@@ -415,7 +388,7 @@ if (MODE == 'Face')
 							}
 							
 							var hole = new THREE.Path();
-							var iRadius = 30;
+							
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
 								var theta = pct * Math.PI * 2.0;
@@ -485,6 +458,75 @@ if (MODE == 'Face')
 							rect.lineTo(lugSpacing, 1);
 							return rect;
 				        }
+				        
+				        function drawIndicator(){
+					        var ind = new THREE.Shape();
+					        ind.moveTo(0, 2);
+					        ind.lineTo(2, -2);
+					        ind.lineTo(-2,-2);
+					        ind.lineTo(0, 2);
+					        return ind;
+				        }
+				        
+				        function showIndicator()
+				        {
+					        if(SELECTED){
+						        indicatorControls.asGeom();
+						        if (SELECTED.object.name == "bezel"){
+									switch(MODE)
+									{
+										case "side view":
+										indicatorMesh.rotation.y = Math.PI/2;
+										indicatorMesh.rotation.x = Math.PI/2;
+										indicatorMesh.position.set(bezel_radius*2/ Math.sqrt(5), bezel_radius/ Math.sqrt(5), -4);
+										indicatorMesh2.rotation.y = Math.PI/2;
+										indicatorMesh2.rotation.x = -Math.PI/2;
+										indicatorMesh2.position.set(bezel_radius*2/ Math.sqrt(5),bezel_radius/ Math.sqrt(5), bezelControls.amount + 4);
+										break;
+										case "front view":
+										indicatorMesh.rotation.z = Math.PI * 3/4;
+										indicatorMesh.position.set(bezel_radius/ Math.sqrt(2) + 2, bezel_radius/ Math.sqrt(2) + 2, 4);
+										indicatorMesh2.rotation.z = -Math.PI/4
+										indicatorMesh2.position.set(iRadius/ Math.sqrt(2) - 2, iRadius/ Math.sqrt(2) - 2, 4);
+										break;
+										default:
+										break;
+									}
+								} else if (SELECTED.object.name == "lug"){
+									switch(MODE)
+									{
+										case "side view":
+										indicatorMesh.rotation.y = Math.PI/2;
+										indicatorMesh.rotation.x = Math.PI/2;
+										indicatorMesh.position.set(bezel_radius/ Math.sqrt(5), bezel_radius*2/ Math.sqrt(5), -4);
+										indicatorMesh2.rotation.y = Math.PI/2;
+										indicatorMesh2.rotation.x = -Math.PI/2;
+										indicatorMesh2.position.set(bezel_radius/ Math.sqrt(5),bezel_radius*2/ Math.sqrt(5), lugControls.amount + 4);
+										break;
+										case "front view":
+										indicatorMesh.rotation.z = Math.PI/2;
+										indicatorMesh.position.set(lugSpacing + 2, bezel_radius + 4, 4);
+										indicatorMesh2.rotation.z = -Math.PI/2;
+										indicatorMesh2.position.set(-lugSpacing -2,bezel_radius + 4, 4);
+										break;
+										default:
+										break;
+									}
+								}
+								else
+								{
+									scene.remove(indicatorMesh);
+									scene.remove(indicatorMesh2);
+								}
+					        }
+
+					        /*
+indicatorMesh.rotation.x = Math.PI/2;
+									indicatorMesh.position.set(0, -bezel_radius, -35);
+									indicatorMesh2.rotation.x = -Math.PI/2;
+									indicatorMesh2.position.set(0, bezel_radius, -35);
+*/
+				        }
 
 				        
 				        
@@ -519,6 +561,7 @@ if (MODE == 'Face')
 						    initialFace = drawWatchFace(bezel_radius);
 						    initialCrown = drawCrown();
 						    initialStrap = drawStrap();
+						    indicatorShape = drawIndicator();
 				
 						}
 			
@@ -781,6 +824,30 @@ if (MODE == 'Face')
 						        };
 						
 						    }
+						    
+						    indicatorControls = new function () {
+								this.bevelEnabled = false;
+								this.amount = .1;
+						        this.asGeom = function () {
+						            scene.remove(indicatorMesh);
+						            scene.remove(indicatorMesh2);
+									// create a new one
+
+					                var indicatorOptions = {
+						                    
+						                    bevelEnabled: indicatorControls.bevelEnabled,
+						                    amount: indicatorControls.amount,
+						            };
+						            
+						     		indicatorMesh = new THREE.SceneUtils.createMultiMaterialObject(new THREE.ExtrudeGeometry(indicatorShape, indicatorOptions), [indicatorMaterial]);
+							 		indicatorMesh2 = new THREE.SceneUtils.createMultiMaterialObject(new THREE.ExtrudeGeometry(indicatorShape, indicatorOptions), [indicatorMaterial]);
+						
+						            // add it to the scene.
+									scene.add(indicatorMesh);
+									scene.add(indicatorMesh2);
+						        };
+						
+						    }
 						        
 								// Chris : Here applied CSS to change location of dropdown menu
 								// CSS at component.css line 332
@@ -799,7 +866,7 @@ var gui = new dat.GUI();
 						        lugControls.asGeom();
 						        faceControls.asGeom();
 						        crownControls.asGeom();
-						        strapControls.asGeom();
+						        strapControls.asGeom();								
 								repopulateArray();
 						        //changes the values, removes the old plane, draws a new shape to the screen
 						        //shape.rotation.y = 150;
