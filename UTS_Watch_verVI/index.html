@@ -306,14 +306,8 @@
 						}
 												
 						//render function		
-						function render() {	
-						    //shape.rotation.y = step += 0.02;
-							/*
-if (MODE == 'Face')
-							{
-								
-							}
-*/
+						function render() {
+							var currentMode = MODE;
 							if (camera.position.z < 80 && camera.position.z > -80)
 							{
 								MODE = "side view";
@@ -322,7 +316,9 @@ if (MODE == 'Face')
 							{
 								MODE = "front view";
 							}
-							showIndicator();
+							if (currentMode != MODE){
+								showIndicator();
+							}
 							//updateCameraRotation();
 							// render using requestAnimationFrame
 							requestAnimationFrame(render);
@@ -547,9 +543,9 @@ if (MODE == 'Face')
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI * 3/4;
-										indicatorMesh.position.set(iRadius/ Math.sqrt(2) + 2, iRadius/ Math.sqrt(2) + 2, 4);
+										indicatorMesh.position.set(iRadius/ Math.sqrt(2) + 2, iRadius/ Math.sqrt(2) + 2, bezelControls.amount + 4);
 										indicatorMesh2.rotation.z = -Math.PI/4
-										indicatorMesh2.position.set( - 2, - 2, 4);
+										indicatorMesh2.position.set( - 2, - 2, bezelControls.amount + 4);
 										break;
 										default:
 										break;
