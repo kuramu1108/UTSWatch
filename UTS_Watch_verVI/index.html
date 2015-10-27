@@ -218,7 +218,20 @@
 										default:
 										break;
 									}
+								} else if (SELECTED.object.name == "face"){
+									switch(MODE)
+									{
+										case "side view":
+										break;
+										case "front view":
+										iRadius = map(iRadius, 25,33,v);
+										updateWatchFace();
+										break;
+										default:
+										break;
+									}
 								}
+
 							}
 						}
 						
@@ -257,6 +270,18 @@
 										default:
 										break;
 									}
+								} else if (SELECTED.object.name == "face"){
+									switch(MODE)
+									{
+										case "side view":
+										break;
+										case "front view":
+										iRadius = 30;
+										updateWatchFace();
+										break;
+										default:
+										break;
+									}
 								}
 
 							}
@@ -274,11 +299,12 @@
 							strapControls.asGeom();
 							repopulateArray();
 						}
-						
-						function changeMODE(mode){
-							MODE = mode;
+						function updateWatchFace()
+						{
+							initialBezel = drawBezel(bezel_radius);
+							bezelControls.asGeom();
 						}
-						
+												
 						//render function		
 						function render() {	
 						    //shape.rotation.y = step += 0.02;
@@ -498,10 +524,10 @@ if (MODE == 'Face')
 										case "side view":
 										indicatorMesh.rotation.y = Math.PI/2;
 										indicatorMesh.rotation.x = Math.PI/2;
-										indicatorMesh.position.set(bezel_radius/ Math.sqrt(5), bezel_radius*2/ Math.sqrt(5), -4);
+										indicatorMesh.position.set(bezel_radius/ Math.sqrt(5), bezel_radius*2/ Math.sqrt(5) + 4, -4);
 										indicatorMesh2.rotation.y = Math.PI/2;
 										indicatorMesh2.rotation.x = -Math.PI/2;
-										indicatorMesh2.position.set(bezel_radius/ Math.sqrt(5),bezel_radius*2/ Math.sqrt(5), lugControls.amount + 4);
+										indicatorMesh2.position.set(bezel_radius/ Math.sqrt(5),bezel_radius*2/ Math.sqrt(5) + 4, lugControls.amount + 4);
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI/2;
@@ -512,7 +538,24 @@ if (MODE == 'Face')
 										default:
 										break;
 									}
+								} else if (SELECTED.object.name == "face"){
+									switch(MODE)
+									{
+										case "side view":
+										scene.remove(indicatorMesh);
+										scene.remove(indicatorMesh2);
+										break;
+										case "front view":
+										indicatorMesh.rotation.z = Math.PI * 3/4;
+										indicatorMesh.position.set(iRadius/ Math.sqrt(2) + 2, iRadius/ Math.sqrt(2) + 2, 4);
+										indicatorMesh2.rotation.z = -Math.PI/4
+										indicatorMesh2.position.set( - 2, - 2, 4);
+										break;
+										default:
+										break;
+									}
 								}
+
 								else
 								{
 									scene.remove(indicatorMesh);
