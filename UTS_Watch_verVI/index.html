@@ -91,7 +91,7 @@
 						var indicatorMesh = new THREE.Mesh();
 						var indicatorMesh2 = new THREE.Mesh();
 						var indicatorControls;
-						var indicatorMaterial = new THREE.MeshPhongMaterial( { color: 0xFFD700, specular:0x847c7c, shininess: 0, combine: THREE.MultiplyOperation} );
+						var indicatorMaterial = new THREE.MeshBasicMaterial( { color: 0xFFEB7F} );
 						
 						// helping function
 						function map(current, min,max,v)
@@ -154,6 +154,7 @@
 								intersects[ 0 ].object.material.color.setHex( 0xec5252 );
 								SELECTED = intersects[0];
 								SELECTED.object.controler.isSelected = true;
+								showIndicator();
 							}
 
 						});
@@ -308,6 +309,7 @@
 						//render function		
 						function render() {
 							var currentMode = MODE;
+							var currentSELECTED = SELECTED;
 							if (camera.position.z < 80 && camera.position.z > -80)
 							{
 								MODE = "side view";
