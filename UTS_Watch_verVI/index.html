@@ -64,12 +64,12 @@
 						// variable for shape holder
 						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
 						// variable for mesh holder
-						var bezelMesh = new THREE.Mesh();
-						var lugMesh = new THREE.Mesh();
-						var faceMesh = new THREE.Mesh();
-						var crownMesh = new THREE.Mesh();
-						var strapMesh = new THREE.Mesh();
-						var strapMesh2 = new THREE.Mesh();
+						var bezelMesh;
+						var lugMesh;
+						var faceMesh;
+						var crownMesh;
+						var strapMesh;
+						var strapMesh2;
 						// variable for control holder
 						var bezelControls, lugControls, faceControls, crownControls, strapControls;
 						// variable for extrude option holder
@@ -88,8 +88,8 @@
 						
 						// variable for component indicator
 						var indicatorShape; 
-						var indicatorMesh = new THREE.Mesh();
-						var indicatorMesh2 = new THREE.Mesh();
+						var indicatorMesh;
+						var indicatorMesh2;
 						var indicatorControls;
 						var indicatorMaterial = new THREE.MeshBasicMaterial( { color: 0xFFEB7F} );
 						
@@ -687,7 +687,7 @@ indicatorMesh.rotation.x = Math.PI/2;
 						        this.asGeom = function () {
 						            scene.remove(bezelMesh);
 									// create a new one
-
+									bezelMesh = null;
 					                bezelOptions = {
 						                    amount: bezelControls.amount,
 						                    bevelThickness: bezelControls.bevelThickness,
@@ -729,7 +729,7 @@ indicatorMesh.rotation.x = Math.PI/2;
 						            // remove the old plane
 						            scene.remove(lugMesh);
 									// create a new one
-
+									lugMesh = null;
 					                lugOptions = {
 						                    amount: lugControls.amount,
 						                    bevelThickness: lugControls.bevelThickness,
@@ -768,7 +768,7 @@ indicatorMesh.rotation.x = Math.PI/2;
 						            //scene.remove(shape);
 						            scene.remove(faceMesh);
 									// create a new one
-
+									faceMesh = null;
 					                faceOptions = {
 						                    amount: faceControls.amount,
 						                    bevelThickness: faceControls.bevelThickness,
@@ -801,7 +801,7 @@ indicatorMesh.rotation.x = Math.PI/2;
 						            //scene.remove(shape);
 						            scene.remove(crownMesh);
 									// create a new one
-
+									crownMesh = null;
 					                crownOptions = {
 						                    amount: crownControls.amount,
 						                    bevelThickness: crownControls.bevelThickness,
@@ -844,7 +844,8 @@ indicatorMesh.rotation.x = Math.PI/2;
 						            scene.remove(strapMesh);
 						            scene.remove(strapMesh2);
 									// create a new one
-
+									strapMesh = null;
+									strapMesh2 = null;
 					                strapOptions = {
 						                    
 						                    bevelEnabled: strapControls.bevelEnabled,
@@ -877,7 +878,8 @@ indicatorMesh.rotation.x = Math.PI/2;
 						            scene.remove(indicatorMesh);
 						            scene.remove(indicatorMesh2);
 									// create a new one
-
+									indicatorMesh = null;
+									indicatorMesh2 = null;
 					                var indicatorOptions = {
 						                    
 						                    bevelEnabled: indicatorControls.bevelEnabled,
