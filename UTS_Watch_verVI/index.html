@@ -290,10 +290,12 @@
 						
 						function updateLug(){
 							lugControls.asGeom();
+							showIndicator();
 							repopulateArray();
 						}
 						function updateBezel(){
 							bezelControls.asGeom();
+							showIndicator();
 							repopulateArray();
 						}
 						function updateStrap(){
@@ -304,6 +306,8 @@
 						{
 							initialBezel = drawBezel(bezel_radius);
 							bezelControls.asGeom();
+							showIndicator();
+							repopulateArray();
 						}
 												
 						//render function		
