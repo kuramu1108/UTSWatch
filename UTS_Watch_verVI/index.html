@@ -14,14 +14,12 @@
 		
 		<!-- Geometry Script -->
 		<script type="text/javascript" src="js/three.js"></script>
-<!-- 		<script type="text/javascript" src="js/Geometry/three_mod.js"></script> -->
 		<script type="text/javascript" src="js/Geometry/jquery-1.9.0.js"></script>
-   		<script type="text/javascript" src="js/Geometry/dat.gui.js"></script>
    		<script type="text/javascript" src="js/OrbitControls.js"></script>
    		<script type="text/javascript" src="js/pointer.js"></script>
    		<script type="text/javascript" src="js/STLExporter.js"></script>
    		<script type="text/javascript" src="js/FileSaver.js"></script>
-   		<script type="text/javascript" src="js/lodash.js"></script>
+
    		<style>
 	   		#WebGLcanvas {
 			    overflow: hidden;
@@ -176,13 +174,6 @@
 						
 						
 						//update function
-						function updateStrapWidth(){
-							initialLug = drawLug();
-							lugControls.asGeom();
-							initialStrap = drawStrap();
-							strapControls.asGeom();
-							repopulateArray();
-						}
 						
 						function updateValueScale(v)
 						{
@@ -331,6 +322,7 @@
 							webGLRenderer.render(scene, camera);
 					    }
 					    
+					    // for testing the position of the camera
 					    function updateCameraRotation()
 					    {
 						    var str = "X: " + camera.rotation.x.toString() + "<br>" + "Y: " + camera.rotation.y.toString() + "<br>" + "Z: " + camera.rotation.z.toString() + "<br>" + "X: " + camera.position.x.toString() + "<br>" + "Y: " + camera.position.y.toString() + "<br>" + "Z: " + camera.position.z.toString() + "<br>" + MODE;
@@ -350,6 +342,7 @@
 						    camera.lookAt(new THREE.Vector3(0, 0, 0));
 						    cameraControl.enabled = true;
 					    }
+					    
 					    function drawLug() {
 							var lugs = [];
 							var form = 2;
@@ -533,9 +526,9 @@
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI/2;
-										indicatorMesh.position.set(lugSpacing + 2, bezel_radius + 4, 4);
+										indicatorMesh.position.set(lugSpacing + 2, bezel_radius + 4, lugControls.amount + 4);
 										indicatorMesh2.rotation.z = -Math.PI/2;
-										indicatorMesh2.position.set(-lugSpacing -2,bezel_radius + 4, 4);
+										indicatorMesh2.position.set(-lugSpacing -2,bezel_radius + 4, lugControls.amount + 4);
 										break;
 										default:
 										break;
@@ -564,13 +557,6 @@
 									scene.remove(indicatorMesh2);
 								}
 					        }
-
-					        /*
-indicatorMesh.rotation.x = Math.PI/2;
-									indicatorMesh.position.set(0, -bezel_radius, -35);
-									indicatorMesh2.rotation.x = -Math.PI/2;
-									indicatorMesh2.position.set(0, bezel_radius, -35);
-*/
 				        }
 
 				        
@@ -589,8 +575,8 @@ indicatorMesh.rotation.x = Math.PI/2;
 						     }
 						
 						     //  meshMaterial.side = THREE.DoubleSide;
-						     var wireFrameMat = new THREE.MeshBasicMaterial();
-						     wireFrameMat.wireframe = true;
+						     //var wireFrameMat = new THREE.MeshBasicMaterial();
+						     //wireFrameMat.wireframe = true;
 						
 						     // create a multimaterial
 						     var mesh = new THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
@@ -928,6 +914,8 @@ var gui = new dat.GUI();
 						{
 							scene.remove(strapMesh);
 							scene.remove(strapMesh2);
+							scene.remove(indicatorMesh);
+							scene.remove(indicatorMesh2);
 							saveSTL(scene, 'yourWatch');
 							scene.add(strapMesh);
 							scene.add(strapMesh2);
