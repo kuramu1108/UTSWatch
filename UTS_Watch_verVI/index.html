@@ -59,7 +59,7 @@
 						// variable for setting up the scene three.js and WebGL
 						var scene, camera, webGLRenderer, cameraControl;
 						// variable for shape holder
-						var initialBezel, initialLug, initialFace, initialCrown, initialStrap;
+						var bezelShape, lugShape, faceShape, crownShape, strapShape;
 						// variable for mesh holder
 						var bezelMesh;
 						var lugMesh;
@@ -73,15 +73,14 @@
 						var bezelOptions, lugOptions, faceOptions, crownOptions, strapOptions;
 						
 						// variable for selecting object
-						var raycaster = new THREE.Raycaster()						
 						var mouse = new THREE.Vector2();
 						var meshCollection = [];
 						var SELECTED = null;
 						var MODE = "";
 						var lugSpacing = 15;
 						var lugHeight = 3;
-						var bezel_radius = 35;
-						var iRadius = 30;//inner radius
+						var bezelRadius = 35;
+						var bezelInnerRadius = 30;//inner radius
 						
 						// variable for component indicator
 						var indicatorShape; 
@@ -135,13 +134,14 @@
 						});
 						
 						thisOne.addEventListener("gesturelongpress", function(e){
+						// find out the selected mesh and highlight it
 							mouse.x = ( e.target.longpressInitPosition.x / $("#WebGLcanvas").width() ) * 2 - 1;
 							mouse.y = - ( e.target.longpressInitPosition.y / $("#WebGLcanvas").height() ) * 2 + 1;
 							var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
 							//projector.unproject( vector, camera );
 							vector.unproject(camera);
 							//raycaster.setFromCamera( mouse, camera );
-							raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+							var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 							var intersects = raycaster.intersectObjects( meshCollection, true);
 							if ( intersects.length > 0 ) {
 								if (SELECTED){
@@ -201,8 +201,8 @@
 										break;
 										case "front view":
 										lugSpacing = map(lugSpacing, 11,17,v);
-										initialLug = drawLug();
-										initialStrap = drawStrap();
+										lugShape = drawLug();
+										strapShape = drawStrap();
 										updateLug();
 										updateStrap();
 										break;
@@ -215,7 +215,7 @@
 										case "side view":
 										break;
 										case "front view":
-										iRadius = map(iRadius, 25,33,v);
+										bezelInnerRadius = map(bezelInnerRadius, 25,33,v);
 										updateWatchFace();
 										break;
 										default:
@@ -253,8 +253,8 @@
 										break;
 										case "front view":
 										lugSpacing = 15;
-										initialLug = drawLug();
-										initialStrap = drawStrap();
+										lugShape = drawLug();
+										strapShape = drawStrap();
 										updateLug();
 										updateStrap();
 										break;
@@ -267,7 +267,7 @@
 										case "side view":
 										break;
 										case "front view":
-										iRadius = 30;
+										bezelInnerRadius = 30;
 										updateWatchFace();
 										break;
 										default:
@@ -294,7 +294,7 @@
 						}
 						function updateWatchFace()
 						{
-							initialBezel = drawBezel(bezel_radius);
+							bezelShape = drawBezel(bezelRadius);
 							bezelControls.asGeom();
 							showIndicator();
 							repopulateArray();
@@ -347,9 +347,9 @@
 							var form = 2;
 							var limit = 25;
 							//var anchor1 = [lugSpacing, 46 - form * (limit - 14)];
-							var anchor1 = [lugSpacing, Math.sqrt(bezel_radius * bezel_radius - lugSpacing * lugSpacing)];
-							var anchor2 = [lugSpacing, bezel_radius + lugHeight];
-							var anchor3 = [(46 - bezel_radius - lugHeight)/2 + 14, bezel_radius + lugHeight];
+							var anchor1 = [lugSpacing, Math.sqrt(bezelRadius * bezelRadius - lugSpacing * lugSpacing)];
+							var anchor2 = [lugSpacing, bezelRadius + lugHeight];
+							var anchor3 = [(46 - bezelRadius - lugHeight)/2 + 14, bezelRadius + lugHeight];
 							var anchor4 = [limit, 46 - form * (limit - 14)];
 							
 							var top_right_lug = new THREE.Shape();
@@ -412,8 +412,8 @@
 							for (var i = 0; i < 360; i++) {
 								var pct = (i + 1) / 360;
 								var theta = pct * Math.PI * 2.0;
-								var x = iRadius * Math.cos(theta);
-								var y = iRadius * Math.sin(theta);
+								var x = bezelInnerRadius * Math.cos(theta);
+								var y = bezelInnerRadius * Math.sin(theta);
 								if (i == 0) 
 								{
 									hole.moveTo(x, y);
@@ -498,16 +498,16 @@
 										case "side view":
 										indicatorMesh.rotation.y = Math.PI/2;
 										indicatorMesh.rotation.x = Math.PI/2;
-										indicatorMesh.position.set(bezel_radius*2/ Math.sqrt(5), bezel_radius/ Math.sqrt(5), -4);
+										indicatorMesh.position.set(bezelRadius*2/ Math.sqrt(5), bezelRadius/ Math.sqrt(5), -4);
 										indicatorMesh2.rotation.y = Math.PI/2;
 										indicatorMesh2.rotation.x = -Math.PI/2;
-										indicatorMesh2.position.set(bezel_radius*2/ Math.sqrt(5),bezel_radius/ Math.sqrt(5), bezelControls.amount + 4);
+										indicatorMesh2.position.set(bezelRadius*2/ Math.sqrt(5),bezelRadius/ Math.sqrt(5), bezelControls.amount + 4);
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI * 3/4;
-										indicatorMesh.position.set(bezel_radius/ Math.sqrt(2) + 2, bezel_radius/ Math.sqrt(2) + 2, 4);
+										indicatorMesh.position.set(bezelRadius/ Math.sqrt(2) + 2, bezelRadius/ Math.sqrt(2) + 2, bezelControls.amount + 2);
 										indicatorMesh2.rotation.z = -Math.PI/4
-										indicatorMesh2.position.set(iRadius/ Math.sqrt(2) - 2, iRadius/ Math.sqrt(2) - 2, 4);
+										indicatorMesh2.position.set(bezelInnerRadius/ Math.sqrt(2) - 2, bezelInnerRadius/ Math.sqrt(2) - 2, bezelControls.amount + 2);
 										break;
 										default:
 										break;
@@ -518,16 +518,16 @@
 										case "side view":
 										indicatorMesh.rotation.y = Math.PI/2;
 										indicatorMesh.rotation.x = Math.PI/2;
-										indicatorMesh.position.set(bezel_radius/ Math.sqrt(5), bezel_radius*2/ Math.sqrt(5) + 4, -4);
+										indicatorMesh.position.set(bezelRadius/ Math.sqrt(5), bezelRadius*2/ Math.sqrt(5) + 4, -4);
 										indicatorMesh2.rotation.y = Math.PI/2;
 										indicatorMesh2.rotation.x = -Math.PI/2;
-										indicatorMesh2.position.set(bezel_radius/ Math.sqrt(5),bezel_radius*2/ Math.sqrt(5) + 4, lugControls.amount + 4);
+										indicatorMesh2.position.set(bezelRadius/ Math.sqrt(5),bezelRadius*2/ Math.sqrt(5) + 4, lugControls.amount + 4);
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI/2;
-										indicatorMesh.position.set(lugSpacing + 2, bezel_radius + 4, lugControls.amount + 4);
+										indicatorMesh.position.set(lugSpacing + 2, bezelRadius + 4, lugControls.amount + 2);
 										indicatorMesh2.rotation.z = -Math.PI/2;
-										indicatorMesh2.position.set(-lugSpacing -2,bezel_radius + 4, lugControls.amount + 4);
+										indicatorMesh2.position.set(-lugSpacing -2,bezelRadius + 4, lugControls.amount + 2);
 										break;
 										default:
 										break;
@@ -541,7 +541,7 @@
 										break;
 										case "front view":
 										indicatorMesh.rotation.z = Math.PI * 3/4;
-										indicatorMesh.position.set(iRadius/ Math.sqrt(2) + 2, iRadius/ Math.sqrt(2) + 2, bezelControls.amount + 4);
+										indicatorMesh.position.set(bezelInnerRadius/ Math.sqrt(2) + 2, bezelInnerRadius/ Math.sqrt(2) + 2, bezelControls.amount + 4);
 										indicatorMesh2.rotation.z = -Math.PI/4
 										indicatorMesh2.position.set( - 2, - 2, bezelControls.amount + 4);
 										break;
@@ -579,17 +579,21 @@
 						
 						     // create a multimaterial
 						     var mesh = new THREE.Mesh(geom, meshMaterial);
-						     //var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
+						     
+						     // var mesh = new THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);						     
+							 // the return type of the above function is OBject3D, the mesh object is in its children[0] property
+							 // replace by creating a simple THREE.Mesh object
+							 // related mesh properties are updated into msehName.propertyName instead of meshName.children[0].propertyName by Po-Hao
 						     
 						     return mesh;
 						}
 						
 						function shapeCreation(){
-							initialBezel = drawBezel(bezel_radius);
-						    initialLug = drawLug();
-						    initialFace = drawWatchFace(bezel_radius);
-						    initialCrown = drawCrown();
-						    initialStrap = drawStrap();
+							bezelShape = drawBezel(bezelRadius);
+						    lugShape = drawLug();
+						    faceShape = drawWatchFace(bezelRadius);
+						    crownShape = drawCrown();
+						    strapShape = drawStrap();
 						    indicatorShape = drawIndicator();
 				
 						}
@@ -682,7 +686,7 @@
 						                    steps: bezelControls.steps
 						            };
 						
-						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions), this.isSelected);
+						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(bezelShape, bezelOptions), this.isSelected);
 						            bezelMesh.controler = bezelControls;
 									bezelMesh.name = "bezel";
 						            // add it to the scene.									
@@ -724,7 +728,7 @@
 						                    steps: lugControls.steps
 						            };
 						
-						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions), this.isSelected);
+						            lugMesh = createMesh(new THREE.ExtrudeGeometry(lugShape, lugOptions), this.isSelected);
 						            lugMesh.controler = lugControls;
 						            lugMesh.name = "lug";
 						            // add it to the scene.
@@ -761,7 +765,7 @@
 						                    bevelEnabled: faceControls.bevelEnabled
 						                    
 						            };
-						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions), this.isSelected);
+						            faceMesh = createMesh(new THREE.ExtrudeGeometry(faceShape, faceOptions), this.isSelected);
 						            faceMesh.controler = faceControls;
 						            faceMesh.name = "face";
 						            // add it to the scene.
@@ -796,14 +800,14 @@
 						                    steps: crownControls.steps
 						            };
 						
-						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions), this.isSelected);
+						            crownMesh = createMesh(new THREE.ExtrudeGeometry(crownShape, crownOptions), this.isSelected);
 						            crownMesh.controler = crownControls;
 						            crownMesh.name = "crown";
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(crownMesh);
 									crownMesh.rotation.y = Math.PI/2;
-									crownMesh.position.set(bezel_radius - this.amount/2, 0, 0);
+									crownMesh.position.set(bezelRadius - this.amount/2, 0, 0);
 						        };
 						
 						    }
@@ -837,8 +841,8 @@
 											extrudePath: strapControls.extrudePath
 						            };
 						
-						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
-						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
+						            strapMesh = createMesh(new THREE.ExtrudeGeometry(strapShape, strapOptions), this.isSelected);
+						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(strapShape, strapOptions), this.isSelected);
 						            strapMesh.controler = strapControls;
 						            strapMesh.name = "strap";
 						            strapMesh2.controler = strapControls;
@@ -847,9 +851,9 @@
 									scene.add(strapMesh);
 									scene.add(strapMesh2);
 									strapMesh.rotation.x = Math.PI/2;
-									strapMesh.position.set(0, -bezel_radius, -35);
+									strapMesh.position.set(0, -bezelRadius, -35);
 									strapMesh2.rotation.x = -Math.PI/2;
-									strapMesh2.position.set(0, bezel_radius, -35);
+									strapMesh2.position.set(0, bezelRadius, -35);
 									
 						        };
 						
