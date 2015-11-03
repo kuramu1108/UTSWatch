@@ -578,9 +578,10 @@
 						     //wireFrameMat.wireframe = true;
 						
 						     // create a multimaterial
-						     var mesh = new THREE.Mesh(geom, meshMaterial);
+						     var mesh = new THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
 						     //var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [wireFrameMat]);
 						     
+							 // the return type of mesh is OBject3D, the mesh object is in its children[0] property   by Po-Hao
 						     return mesh;
 						}
 						
@@ -683,8 +684,8 @@
 						            };
 						
 						            bezelMesh = createMesh(new THREE.ExtrudeGeometry(initialBezel, bezelOptions), this.isSelected);
-						            bezelMesh.controler = bezelControls;
-									bezelMesh.name = "bezel";
+						            bezelMesh.children[0].controler = bezelControls;
+									bezelMesh.children[0].name = "bezel";
 						            // add it to the scene.									
 									scene.add(bezelMesh);
 									// add the new mesh to the mesh array
@@ -692,7 +693,7 @@
 									// add the new mesh as selected
 									if (SELECTED && SELECTED.object.name == "bezel")
 									{
-										SELECTED.object = bezelMesh;
+										SELECTED.object = bezelMesh.children[0];
 									}
 								};
 								
@@ -725,8 +726,8 @@
 						            };
 						
 						            lugMesh = createMesh(new THREE.ExtrudeGeometry(initialLug, lugOptions), this.isSelected);
-						            lugMesh.controler = lugControls;
-						            lugMesh.name = "lug";
+						            lugMesh.children[0].controler = lugControls;
+						            lugMesh.children[0].name = "lug";
 						            // add it to the scene.
 									scene.add(lugMesh);
 									// add the new mesh to the mesh array
@@ -734,7 +735,7 @@
 									// add the new mesh as selected
 									if (SELECTED && SELECTED.object.name == "lug")
 									{
-										SELECTED.object = lugMesh;
+										SELECTED.object = lugMesh.children[0];
 									}						        
 								};
 						
@@ -762,8 +763,8 @@
 						                    
 						            };
 						            faceMesh = createMesh(new THREE.ExtrudeGeometry(initialFace, faceOptions), this.isSelected);
-						            faceMesh.controler = faceControls;
-						            faceMesh.name = "face";
+						            faceMesh.children[0].controler = faceControls;
+						            faceMesh.children[0].name = "face";
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(faceMesh);
@@ -797,8 +798,8 @@
 						            };
 						
 						            crownMesh = createMesh(new THREE.ExtrudeGeometry(initialCrown, crownOptions), this.isSelected);
-						            crownMesh.controler = crownControls;
-						            crownMesh.name = "crown";
+						            crownMesh.children[0].controler = crownControls;
+						            crownMesh.children[0].name = "crown";
 						            // add it to the scene.
 									//scene.add(shape);
 									scene.add(crownMesh);
@@ -839,10 +840,10 @@
 						
 						            strapMesh = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
 						            strapMesh2 = createMesh(new THREE.ExtrudeGeometry(initialStrap, strapOptions), this.isSelected);
-						            strapMesh.controler = strapControls;
-						            strapMesh.name = "strap";
-						            strapMesh2.controler = strapControls;
-						            strapMesh2.name = "strap2";
+						            strapMesh.children[0].controler = strapControls;
+						            strapMesh.children[0].name = "strap";
+						            strapMesh2.children[0].controler = strapControls;
+						            strapMesh2.children[0].name = "strap2";
 						            // add it to the scene.
 									scene.add(strapMesh);
 									scene.add(strapMesh2);
