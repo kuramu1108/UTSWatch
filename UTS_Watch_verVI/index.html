@@ -186,7 +186,7 @@
 										updateBezel();
 										break;
 										case "front view":
-										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,10, v);
+										bezelControls.bevelSize = map(bezelControls.bevelSize, 0,3, v);
 										updateBezel();
 										break;
 										default:
@@ -202,7 +202,7 @@
 										case "front view":
 										lugSpacing = map(lugSpacing, 11,17,v);
 										lugShape = drawLug();
-										strapShape = drawStrap();
+										strapShape = drawStrap(lugSpacing);
 										updateLug();
 										updateStrap();
 										break;
@@ -238,7 +238,7 @@
 										updateBezel();
 										break;
 										case "front view":
-										bezelControls.bevelSize = 0.5;
+										bezelControls.bevelSize = .5;
 										updateBezel();
 										break;
 										default:
@@ -254,7 +254,7 @@
 										case "front view":
 										lugSpacing = 15;
 										lugShape = drawLug();
-										strapShape = drawStrap();
+										strapShape = drawStrap(lugSpacing);
 										updateLug();
 										updateStrap();
 										break;
@@ -468,14 +468,14 @@
 							return circle;
 				        }
 				        
-				        function drawStrap(){
+				        function drawStrap(width){
 							// create a basic shape
 				            var rect = new THREE.Shape();
-							rect.moveTo(lugSpacing, 1);
-							rect.lineTo(lugSpacing, -1);
-							rect.lineTo(-lugSpacing, -1);
-							rect.lineTo(-lugSpacing, 1);
-							rect.lineTo(lugSpacing, 1);
+							rect.moveTo(width, 1);
+							rect.lineTo(width, -1);
+							rect.lineTo(-width, -1);
+							rect.lineTo(-width, 1);
+							rect.lineTo(width, 1);
 							return rect;
 				        }
 				        
@@ -560,17 +560,19 @@
 
 				        
 				        
-				        function createMesh(geom, isSelec) {
-						    //geom.applyMatrix(new THREE.Matrix4().makeTranslation(-20, 0, 0));
-						
-						     // assign two materials
+				        function createMesh(geom, isSelec, optionMaterial) {						
 						     if (isSelec)
 						     {
 						     	var meshMaterial = new THREE.MeshPhongMaterial( { color: 0xec5252, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
 						     }
 						     else
 						     {
-							    var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+							    if (optionMaterial){
+								    var meshMaterial = optionMaterial;
+							    }
+							    else{
+							    	var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x96b0be, specular:0x847c7c, shininess: 30, combine: THREE.MultiplyOperation} );
+							    }
 						     }
 						
 						     //  meshMaterial.side = THREE.DoubleSide;
@@ -593,7 +595,7 @@
 						    lugShape = drawLug();
 						    faceShape = drawWatchFace(bezelRadius);
 						    crownShape = drawCrown();
-						    strapShape = drawStrap();
+						    strapShape = drawStrap(lugSpacing);
 						    indicatorShape = drawIndicator();
 				
 						}
@@ -666,7 +668,7 @@
 						        this.amount = 2;
 						        this.bevelThickness = 2;
 								this.bevelSize = 0.5;
-						        this.bevelSegments = 3;
+						        this.bevelSegments = 12;
 								this.bevelEnabled = true;
 						        this.curveSegments = 12;
 						        this.steps = 1;
@@ -746,9 +748,6 @@
 							// control for watch face
 						    faceControls = new function () {
 						        this.amount = .5;
-						        this.bevelThickness = 0;
-								this.bevelSize = 0;
-						        this.bevelSegments = 0;
 								this.bevelEnabled = false;
 								this.isSelected = false;
 						        this.asGeom = function () {
@@ -759,17 +758,68 @@
 									faceMesh = null;
 					                faceOptions = {
 						                    amount: faceControls.amount,
-						                    bevelThickness: faceControls.bevelThickness,
-						                    bevelSize: faceControls.bevelSize,
-						                    bevelSegments: faceControls.bevelSegments,
 						                    bevelEnabled: faceControls.bevelEnabled
 						                    
 						            };
 						            faceMesh = createMesh(new THREE.ExtrudeGeometry(faceShape, faceOptions), this.isSelected);
 						            faceMesh.controler = faceControls;
 						            faceMesh.name = "face";
+						            var decoMaterial = new THREE.MeshPhongMaterial( { color: 0x000000, specular:0x000000, shininess: 30, combine: THREE.MultiplyOperation} );
+						            var decoMesh = createMesh(new THREE.ExtrudeGeometry(drawWatchFace(2), {
+						                    amount: faceControls.amount + .5,
+						                    bevelEnabled: false
+						            }), this.isSelected, decoMaterial);
+						            var decoMesh2 = decoMesh.clone();
+						            var decoMesh4 = decoMesh.clone();
+						            var decoMesh5 = decoMesh.clone();
+						            var decoMesh7 = decoMesh.clone();
+						            var decoMesh8 = decoMesh.clone();
+						            var decoMesh10 = decoMesh.clone();
+						            var decoMesh11 = decoMesh.clone();
+						            var decoMesh3 = createMesh(new THREE.ExtrudeGeometry(drawStrap(4), {
+						                    amount: faceControls.amount + .5,
+						                    bevelEnabled: false
+						            }), this.isSelected, decoMaterial);
+						            var decoMesh6 = decoMesh3.clone();
+						            var decoMesh9 = decoMesh3.clone();
+						            var decoDisRadius = bezelInnerRadius - 5;
+						            var ind = new THREE.Shape();
+							        ind.moveTo(0, -4);
+							        ind.lineTo(3, 4);
+							        ind.lineTo(-3,4);
+							        ind.lineTo(0, -4);
+									var decoMesh12 = createMesh(new THREE.ExtrudeGeometry(ind, {
+						                    amount: faceControls.amount + .5,
+						                    bevelEnabled: false
+						            }), this.isSelected, decoMaterial);
+																								            
+						            decoMesh.position.set(decoDisRadius/2, decoDisRadius*2/ Math.sqrt(5), faceControls.amount);
+						            decoMesh2.position.set(decoDisRadius*2/Math.sqrt(5), decoDisRadius/2, faceControls.amount);
+						            decoMesh3.position.set(decoDisRadius-2, 0, faceControls.amount);
+						            decoMesh4.position.set(decoDisRadius*2/Math.sqrt(5), -decoDisRadius/2, faceControls.amount);
+						            decoMesh5.position.set(decoDisRadius/2, -decoDisRadius*2/ Math.sqrt(5), faceControls.amount);
+						            decoMesh6.rotation.z = Math.PI/2;
+						            decoMesh6.position.set(0, -decoDisRadius+2, faceControls.amount);
+						            decoMesh7.position.set(-decoDisRadius/2, -decoDisRadius*2/ Math.sqrt(5), faceControls.amount);
+						            decoMesh8.position.set(-decoDisRadius*2/Math.sqrt(5), -decoDisRadius/2, faceControls.amount);
+						            decoMesh9.position.set(-decoDisRadius+2, 0, faceControls.amount);
+						            decoMesh10.position.set(-decoDisRadius*2/Math.sqrt(5), decoDisRadius/2, faceControls.amount);
+						            decoMesh11.position.set(-decoDisRadius/2, decoDisRadius*2/ Math.sqrt(5), faceControls.amount);
+						            decoMesh12.position.set(0, decoDisRadius-2, faceControls.amount);
+						            
+						            scene.add(decoMesh);
+						            scene.add(decoMesh2);
+						            scene.add(decoMesh3);
+						            scene.add(decoMesh4);
+						            scene.add(decoMesh5);
+						            scene.add(decoMesh6);
+						            scene.add(decoMesh7);
+						            scene.add(decoMesh8);
+						            scene.add(decoMesh9);
+						            scene.add(decoMesh10);
+						            scene.add(decoMesh11);
+						            scene.add(decoMesh12);
 						            // add it to the scene.
-									//scene.add(shape);
 									scene.add(faceMesh);
 						        };
 						
