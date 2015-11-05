@@ -333,6 +333,12 @@
 						    camera.position.set(0, 0, 150);
 						    camera.lookAt(new THREE.Vector3(0, 0, 0));
 						    cameraControl.enabled = false;
+						    for(var i = 0; i < meshCollection.length; i ++)
+						    {
+						    	meshCollection[i].material.color.setHex( 0x96b0be );
+							}
+							scene.remove(indicatorMesh);
+							scene.remove(indicatorMesh2);
 					    }
 					    
 					    function watchModelMode()
