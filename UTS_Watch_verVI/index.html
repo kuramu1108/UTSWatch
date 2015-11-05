@@ -765,7 +765,7 @@
 						            faceMesh.controler = faceControls;
 						            faceMesh.name = "face";
 						            //var decoMaterial = new THREE.MeshPhongMaterial( { color: 0x000000, specular:0x000000, shininess: 30, combine: THREE.MultiplyOperation} );
-						            var decoMesh = createMesh(new THREE.ExtrudeGeometry(drawWatchFace(2), {
+						            var decoMesh = createMesh(new THREE.ExtrudeGeometry(drawWatchFace(2.3), {
 						                    amount: faceControls.amount + .5,
 						                    bevelEnabled: false
 						            }), this.isSelected);
@@ -776,7 +776,13 @@
 						            var decoMesh8 = decoMesh.clone();
 						            var decoMesh10 = decoMesh.clone();
 						            var decoMesh11 = decoMesh.clone();
-						            var decoMesh3 = createMesh(new THREE.ExtrudeGeometry(drawStrap(4), {
+						            var rect = new THREE.Shape();
+									rect.moveTo(4, 1.5);
+									rect.lineTo(4, -1.5);
+									rect.lineTo(-4, -1.5);
+									rect.lineTo(-4, 1.5);
+									rect.lineTo(4, 1.5);
+						            var decoMesh3 = createMesh(new THREE.ExtrudeGeometry(rect, {
 						                    amount: faceControls.amount + .5,
 						                    bevelEnabled: false
 						            }), this.isSelected);
