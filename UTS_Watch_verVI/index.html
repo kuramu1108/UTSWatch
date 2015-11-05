@@ -344,13 +344,13 @@
 					    
 					    function drawLug() {
 							var lugs = [];
-							var form = 3.5;
+							var form = 3;
 							var limit = 32;
 							//var anchor1 = [lugSpacing, 46 - form * (limit - 14)];
 							var anchor1 = [lugSpacing, Math.sqrt(bezelRadius * bezelRadius - lugSpacing * lugSpacing)];
 							var anchor2 = [lugSpacing, bezelRadius + lugHeight];
-							var anchor3 = [(46 - bezelRadius - lugHeight)/form + 23, bezelRadius + lugHeight];
-							var anchor4 = [limit, 46 - form * (limit - 23)];
+							var anchor3 = [(46 - bezelRadius - lugHeight)/form + 20, bezelRadius + lugHeight];
+							var anchor4 = [limit, 46 - form * (limit - 20)];
 							
 							var top_right_lug = new THREE.Shape();
 							top_right_lug.moveTo(anchor1[0], anchor1[1]);
