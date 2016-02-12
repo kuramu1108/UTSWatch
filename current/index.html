@@ -321,7 +321,7 @@
 							webGLRenderer.render(scene, camera);
 					    }
 					    
-					    // for testing the position of the camera
+					    // for capturing the position of the camera
 					    function updateCameraRotation()
 					    {
 						    var str = "X: " + camera.rotation.x.toString() + "<br>" + "Y: " + camera.rotation.y.toString() + "<br>" + "Z: " + camera.rotation.z.toString() + "<br>" + "X: " + camera.position.x.toString() + "<br>" + "Y: " + camera.position.y.toString() + "<br>" + "Z: " + camera.position.z.toString() + "<br>" + MODE;
@@ -683,7 +683,7 @@
 						        this.asGeom = function () {
 						            scene.remove(bezelMesh);
 									// create a new one
-									bezelMesh = null;
+									bezelMesh = undefined;
 					                bezelOptions = {
 						                    amount: bezelControls.amount,
 						                    bevelThickness: bezelControls.bevelThickness,
@@ -725,7 +725,7 @@
 						            // remove the old plane
 						            scene.remove(lugMesh);
 									// create a new one
-									lugMesh = null;
+									lugMesh = undefined;
 					                lugOptions = {
 						                    amount: lugControls.amount,
 						                    bevelThickness: lugControls.bevelThickness,
@@ -761,7 +761,7 @@
 						            //scene.remove(shape);
 						            scene.remove(faceMesh);
 									// create a new one
-									faceMesh = null;
+									faceMesh = undefined;
 					                faceOptions = {
 						                    amount: faceControls.amount,
 						                    bevelEnabled: faceControls.bevelEnabled
@@ -851,7 +851,7 @@
 						            //scene.remove(shape);
 						            scene.remove(crownMesh);
 									// create a new one
-									crownMesh = null;
+									crownMesh = undefined;
 					                crownOptions = {
 						                    amount: crownControls.amount,
 						                    bevelThickness: crownControls.bevelThickness,
@@ -894,8 +894,8 @@
 						            scene.remove(strapMesh);
 						            scene.remove(strapMesh2);
 									// create a new one
-									strapMesh = null;
-									strapMesh2 = null;
+									strapMesh = undefined;
+									strapMesh2 = undefined;
 					                strapOptions = {
 						                    
 						                    bevelEnabled: strapControls.bevelEnabled,
@@ -928,8 +928,8 @@
 						            scene.remove(indicatorMesh);
 						            scene.remove(indicatorMesh2);
 									// create a new one
-									indicatorMesh = null;
-									indicatorMesh2 = null;
+									indicatorMesh = undefined;
+									indicatorMesh2 = undefined;
 					                var indicatorOptions = {
 						                    
 						                    bevelEnabled: indicatorControls.bevelEnabled,
