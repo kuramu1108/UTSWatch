@@ -4,7 +4,7 @@
 
 # Application page
 
-[openshift server portal](http://php-hexacorn.ose-pilot.uts.edu.au/)
+[openshift server portal](http://php-hexacorn.ose-pilot.uts.edu.au/current/index.html)
 
 # User Interaction
 
